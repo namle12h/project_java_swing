@@ -1,6 +1,6 @@
-﻿Create database QLBanHang
+﻿Create database QLBanHang1
 
-Use QLBanHang
+Use QLBanHang1
 
 
 
@@ -12,16 +12,26 @@ CREATE TABLE Supplier (
     Phone NVARCHAR(20)
 );
 
--- Bảng Sản phẩm (Product)
+
 CREATE TABLE Product (
     ProductID INT IDENTITY(1,1) PRIMARY KEY,
-    ProductName NVARCHAR(100) NOT NULL,
+    ProductName NVARCHAR(255) NOT NULL,
     Price DECIMAL(18,2) NOT NULL,
     Quantity INT NOT NULL,
     Unit NVARCHAR(50),
     SupplierID INT,
-    CONSTRAINT FK_Product_Supplier FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
+	MinStock INT NOT NULL
+  
 );
+
+INSERT INTO Product (ProductName, Price, Quantity, Unit, SupplierID, MinStock) VALUES
+('Táo Mỹ', 50000, 100, 'kg', 'Nhà cung cấp A', 10),
+('Chuối Laba', 30000, 200, 'kg', 'Nhà cung cấp B', 15),
+('Nho Đỏ', 70000, 50, 'kg', 'Nhà cung cấp C', 5),
+('Sữa Vinamilk', 25000, 150, 'hộp', 'Vinamilk', 20),
+('Gạo ST25', 200000, 30, 'bao', 'Nhà cung cấp D', 5);
+GO
+
 
 -- Bảng Nhân viên (Employee)
 CREATE TABLE Employee (
@@ -88,3 +98,11 @@ CREATE TABLE Admin (
     userAdmin Char(50) Not NULL,
 	password VARCHAR(150) NOT NULL
 );
+
+
+
+
+
+
+
+
