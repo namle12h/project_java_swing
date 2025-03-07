@@ -5,7 +5,6 @@ package com.mycompany.grocerystorepos;
 
 import com.mycompany.grocerystorepos.controller.ProductController;
 import com.mycompany.grocerystorepos.dao.ProductDAO;
-import com.mycompany.grocerystorepos.gui.LoginAdmin;
 import com.mycompany.grocerystorepos.gui.ProductView;
 import javax.swing.SwingUtilities;
 

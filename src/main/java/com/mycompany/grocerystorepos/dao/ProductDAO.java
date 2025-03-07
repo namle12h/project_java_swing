@@ -10,7 +10,6 @@ public class ProductDAO {
     private static final String USER = "sa";
     private static final String PASSWORD = "123";
 
-    // Lấy danh sách tất cả sản phẩm từ CSDL
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM Product";
@@ -20,15 +19,23 @@ public class ProductDAO {
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                products.add(new Product(
+                Product product = new Product(
                         rs.getInt("ProductID"),
                         rs.getString("ProductName"),
                         rs.getDouble("Price"),
                         rs.getInt("Quantity"),
                         rs.getString("Unit"),
                         rs.getString("SupplierID"),
+                        rs.getString("Category"),
                         rs.getInt("MinStock")
-                ));
+                );
+
+                // Kiểm tra cảnh báo hàng tồn kho
+                if (product.getQuantity() < product.getMinStock()) {
+                    System.out.println("⚠️ Cảnh báo: " + product.getProductName() + " có số lượng thấp hơn mức tối thiểu!");
+                }
+
+                products.add(product);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,29 +43,8 @@ public class ProductDAO {
         return products;
     }
 
-    // Thêm sản phẩm mới vào CSDL
-//    public void addProduct(Product product) {
-//        String query = "INSERT INTO Product (ProductName, Price, Quantity, Unit, Supplier, MinStock) VALUES (?, ?, ?, ?, ?, ?)";
-//
-//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-//             PreparedStatement pstmt = conn.prepareStatement(query)) {
-//
-//            pstmt.setString(1, product.getProductName());
-//            pstmt.setDouble(2, product.getPrice());
-//            pstmt.setInt(3, product.getQuantity());
-//            pstmt.setString(4, product.getUnit());
-//            pstmt.setString(5, product.getSupplier());
-//            pstmt.setInt(6, product.getMinStock());
-//
-//            pstmt.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public void addProduct(Product product) {
-        String query = "INSERT INTO Product (ProductName, Price, Quantity, Unit, SupplierID, MinStock) VALUES (?, ?, ?, ?, ?, ?)";
-
+        String query = "INSERT INTO Product (ProductName, Price, Quantity, Unit, SupplierID, Category, MinStock) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -67,33 +53,8 @@ public class ProductDAO {
             pstmt.setInt(3, product.getQuantity());
             pstmt.setString(4, product.getUnit());
             pstmt.setString(5, product.getSupplier());
-            pstmt.setInt(6, product.getMinStock());
-
-            int rowsInserted = pstmt.executeUpdate(); // Trả về số dòng bị ảnh hưởng
-            if (rowsInserted > 0) {
-                System.out.println("✅ Thêm sản phẩm thành công: " + product.getProductName());
-            } else {
-                System.out.println("❌ Không có dòng nào được thêm vào database!");
-            }
-        } catch (SQLException e) {
-            System.out.println("❌ Lỗi SQL khi thêm sản phẩm: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    // Cập nhật thông tin sản phẩm
-    public void updateProduct(Product product) {
-        String query = "UPDATE Product SET ProductName=?, Price=?, Quantity=?, Unit=?, SupplierID=? WHERE ProductID=?";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, product.getProductName());
-            pstmt.setDouble(2, product.getPrice());
-            pstmt.setInt(3, product.getQuantity());
-            pstmt.setString(4, product.getUnit());
-            pstmt.setString(5, product.getSupplier());
-            pstmt.setInt(6, product.getProductID());
+            pstmt.setString(6, product.getCategory());
+            pstmt.setInt(7, product.getMinStock());
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -101,10 +62,30 @@ public class ProductDAO {
         }
     }
 
-    // Xóa sản phẩm khỏi CSDL
+    // 🛠️ Cập nhật sản phẩm
+    public void updateProduct(Product product) {
+        String query = "UPDATE Product SET ProductName=?, Price=?, Quantity=?, Unit=?, SupplierID=?, Category=?, MinStock=? WHERE ProductID=?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, product.getProductName());
+            pstmt.setDouble(2, product.getPrice());
+            pstmt.setInt(3, product.getQuantity());
+            pstmt.setString(4, product.getUnit());
+            pstmt.setString(5, product.getSupplier());
+            pstmt.setString(6, product.getCategory());
+            pstmt.setInt(7, product.getMinStock());
+            pstmt.setInt(8, product.getProductID());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 🛠️ Xóa sản phẩm
     public void deleteProduct(int productID) {
         String query = "DELETE FROM Product WHERE ProductID=?";
-
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -115,11 +96,9 @@ public class ProductDAO {
         }
     }
 
-    // Tìm sản phẩm theo ID
+    // 🛠️ Lấy sản phẩm theo ID
     public Product getProductByID(int productID) {
         String query = "SELECT * FROM Product WHERE ProductID=?";
-        Product product = null;
-
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -127,19 +106,88 @@ public class ProductDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                product = new Product(
+                return new Product(
                         rs.getInt("ProductID"),
                         rs.getString("ProductName"),
                         rs.getDouble("Price"),
                         rs.getInt("Quantity"),
                         rs.getString("Unit"),
                         rs.getString("SupplierID"),
+                        rs.getString("Category"),
                         rs.getInt("MinStock")
                 );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return product;
+        return null;
     }
+    
+
+    // 🛠️ Lấy danh sách danh mục sản phẩm
+//    public ArrayList<String> getAllCategories() {
+//        ArrayList<String> categories = new ArrayList<>();
+//        String query = "SELECT DISTINCT Category FROM Product";
+//
+//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+//             Statement stmt = conn.createStatement();
+//             ResultSet rs = stmt.executeQuery(query)) {
+//
+//            while (rs.next()) {
+//                categories.add(rs.getString("Category"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return categories;
+//    }
+    
+    public List<String> getAllCategories() {
+        List<String> categories = new ArrayList<>();
+        String query = "SELECT DISTINCT Category FROM Product"; // Lấy tất cả danh mục có trong database
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                categories.add(rs.getString("Category"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories;
+    }
+
+    
+ // 🛠️ Lấy danh sách sản phẩm theo danh mục
+    public static List<Product> getProductsByCategory(String category) {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM Product WHERE Category = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, category);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Product product = new Product(
+                        rs.getInt("ProductID"),
+                        rs.getString("ProductName"),
+                        rs.getDouble("Price"),
+                        rs.getInt("Quantity"),
+                        rs.getString("Unit"),
+                        rs.getString("SupplierID"),
+                        rs.getString("Category"),
+                        rs.getInt("MinStock")
+                );
+                products.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
 }
