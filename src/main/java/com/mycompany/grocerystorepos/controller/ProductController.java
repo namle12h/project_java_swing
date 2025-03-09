@@ -146,6 +146,8 @@ public class ProductController {
                     view.setUnit((String) view.getTableModel().getValueAt(selectedRow, 4));
                     view.setSupplier((String) view.getTableModel().getValueAt(selectedRow, 5));
                     view.setCategory((String) view.getTableModel().getValueAt(selectedRow, 6));
+                     view.setMinStock((String) view.getTableModel().getValueAt(selectedRow, 7));
+
                     
                 }
             }

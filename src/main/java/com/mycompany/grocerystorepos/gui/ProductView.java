@@ -96,6 +96,7 @@ public class ProductView extends javax.swing.JFrame {
     }
     public void setCategory(String category) {  cboxloaihang.setSelectedItem(category);  }
    
+    public void setMinStock(String minstock) {  txtminstock.setText(minstock);  }
     public void updateCategoryComboBox(List<String> categories) {
         cboxloaihang.removeAllItems(); // Xóa danh mục cũ
         for (String category : categories) {
@@ -122,6 +123,7 @@ public class ProductView extends javax.swing.JFrame {
     
     public String getCategory() { return (String) cboxloaihang.getSelectedItem(); }
 
+        public String getMinStock() { return (String) txtminstock.getText(); }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

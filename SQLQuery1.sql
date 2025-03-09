@@ -12,7 +12,7 @@ CREATE TABLE Supplier (
     Phone NVARCHAR(20)
 );
 
-DROP TABLE Product ;
+select * FROM Product ;
 
 CREATE TABLE Product (
     ProductID INT IDENTITY(1,1) PRIMARY KEY,
@@ -152,3 +152,64 @@ CREATE TABLE Admin (
 
 
 
+-- 🔹 Tạo CSDL
+CREATE DATABASE QLBanHang1;
+GO
+USE QLBanHang1;
+GO
+
+-- 🔹 Tạo bảng Admin (Người quản lý cấp tài khoản cho nhân viên)
+CREATE TABLE Admin (
+    AdminID INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(50) UNIQUE NOT NULL,
+    Password NVARCHAR(255) NOT NULL
+);
+GO
+
+-- 🔹 Tạo bảng Employee (Quản lý nhân viên)
+CREATE TABLE Employee (
+    EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Phone NVARCHAR(15) UNIQUE NOT NULL,
+    Role NVARCHAR(50) CHECK (Role IN ('Thu ngân', 'Quản lý kho', 'Chủ cửa hàng')),
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- 🔹 Chèn dữ liệu mẫu vào bảng Admin
+INSERT INTO Admin (Username, Password) VALUES
+('admin', '123456'),  -- Mật khẩu mẫu (Cần mã hóa khi thực tế)
+('superadmin', 'admin@123');
+GO
+
+-- 🔹 Chèn dữ liệu mẫu vào bảng Employee
+INSERT INTO Employee (Name, Phone, Role) VALUES
+(N'Nguyễn Văn A', '0987654321', 'Thu ngân'),
+(N'Trần Thị B', '0971122334', 'Quản lý kho'),
+(N'Lê Văn C', '0911223344', 'Chủ cửa hàng');
+GO
+
+SELECT * FROM Employee
+
+DROP TABLE Employee1
+CREATE TABLE Employee1 (
+    EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Phone NVARCHAR(20) NOT NULL,
+    Role NVARCHAR(50) CHECK (Role IN (N'Thu ngân', N'Quản lý kho', N'Chủ cửa hàng')) NOT NULL,
+    Username NVARCHAR(50) UNIQUE NOT NULL,
+    Password NVARCHAR(255) NOT NULL,
+    ShiftStart DATETIME,
+    ShiftEnd DATETIME,
+    SalesPerformance INT DEFAULT 0
+);
+
+
+INSERT INTO Employee1 (Name, Phone, Role, Username, Password, ShiftStart, ShiftEnd, SalesPerformance)
+VALUES 
+(N'Nguyễn Văn A', '0987654321', N'Thu ngân', 'cashier01', '123456', '2024-03-07 08:00:00', '2024-03-07 16:00:00', 50),
+(N'Trần Thị B', '0971234567', N'Quản lý kho', 'warehouse01', '123456', '2024-03-07 09:00:00', '2024-03-07 17:00:00', 30),
+(N'Phạm Văn C', '0912345678', N'Chủ cửa hàng', 'admin01', 'admin123', NULL, NULL, 0);
+
+
+SELECT * FROM Employee1

@@ -4,11 +4,18 @@
  */
 package com.mycompany.grocerystorepos.gui;
 
+import com.mycompany.grocerystorepos.controller.Employee1Controller;
+import com.mycompany.grocerystorepos.controller.EmployeeController;
+import com.mycompany.grocerystorepos.controller.ProductController;
+import com.mycompany.grocerystorepos.dao.Employee1DAO;
+import com.mycompany.grocerystorepos.dao.EmployeeDAO;
+import com.mycompany.grocerystorepos.dao.ProductDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
@@ -171,44 +178,98 @@ public class LoginAdmin extends javax.swing.JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO add your handling code here:
-       
+//     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+//         // TODO add your handling code here:
+//         Connection conn = null;
+//         Statement stmt = null;
+//         ResultSet rs = null;
+//         String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;user=sa;password=123;encrypt=false;";
+//         try {
+//             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//             conn = DriverManager.getConnection(connectionUrl);
+//             String username = edtUsername.getText();
+//             String password = edtPassword.getText();
+//             stmt = conn.createStatement();
+//             String SQL = "SELECT * FROM admin where username='" + username + "'and password='" + password + "'";
+//             rs = stmt.executeQuery(SQL);
+//             // Process the result set
+//             if (rs.next()) {
+//                 dispose();
+// //                HomePage hPage = new HomePage();
+// //                 EmployeeView emView = new EmployeeView();
+//                   Employee1View emView1 = new Employee1View();
+//                  JOptionPane.showMessageDialog(rootPane, "Login success");
+// //                hPage.show();
+//                  Employee1DAO empDao = new Employee1DAO();
+//                  new Employee1Controller(emView1, empDao);
+//                 emView1.show();
+//             } else {
+//                 JOptionPane.showMessageDialog(this, "username or password error");
+//                 edtUsername.setText("");
+//                 edtPassword.setText("");
+//             }
+//             conn.close();
+//         } catch (Exception e) {
+//             System.out.println(e.getMessage());
+//         }
+//     }//GEN-LAST:event_btnLoginActionPerformed
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
         Connection conn = null;
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang;user=sa;password=123;encrypt=false;";
-        try {
+        String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;user=sa;password=123;encrypt=false;";
 
+        try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             conn = DriverManager.getConnection(connectionUrl);
 
             String username = edtUsername.getText();
             String password = edtPassword.getText();
 
-            stmt = conn.createStatement();
-            String SQL = "SELECT * FROM admin where useradmin='" + username + "'and password='" + password + "'";
-            rs = stmt.executeQuery(SQL);
+            // Kiểm tra đăng nhập trong bảng Employee1
+            String SQL = "SELECT * FROM Employee1 WHERE Username=? AND Password=?";
+            pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            rs = pstmt.executeQuery();
 
-            // Process the result set
             if (rs.next()) {
+                // Lấy quyền của nhân viên
+                String role = rs.getString("Role");
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
 
-                dispose();
-                HomePage hPage = new HomePage();
-                 JOptionPane.showMessageDialog(rootPane, "Login success");
-                hPage.show();
+                dispose(); // Đóng cửa sổ đăng nhập
+
+                // Điều hướng giao diện dựa trên quyền của nhân viên
+                if (role.equals("Thu ngân")) {
+                    ProductView productView = new ProductView();
+                    ProductDAO productDAO = new ProductDAO();
+                    new ProductController(productView, productDAO);
+                    productView.setVisible(true);
+                } else if (role.equals("Quản lý kho")) {
+//                    InventoryView inventoryView = new InventoryView();
+//                    // Controller cho quản lý kho (tạo nếu chưa có)
+//                    new InventoryController(inventoryView);
+//                    inventoryView.setVisible(true);
+                } else if (role.equals("Chủ cửa hàng")) {
+                    Employee1View employeeView = new Employee1View();
+                    Employee1DAO empDAO = new Employee1DAO();
+                    new Employee1Controller(employeeView, empDAO);
+                    employeeView.setVisible(true);
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "username or password error");
+                JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác!");
                 edtUsername.setText("");
                 edtPassword.setText("");
-
             }
-            conn.close();
 
+            conn.close();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi đăng nhập: " + e.getMessage());
         }
-    }//GEN-LAST:event_btnLoginActionPerformed
+    }
+
 
     private void bntResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntResetActionPerformed
 //        JOptionPane.showMessageDialog(rootPane, "Tạm biệt");
