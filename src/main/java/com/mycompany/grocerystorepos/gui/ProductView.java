@@ -174,15 +174,15 @@ public class ProductView extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(159, 159, 159))
+                .addComponent(jLabel1)
+                .addGap(201, 201, 201))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(20, 20, 20)
                 .addComponent(jLabel1)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jLabel2.setText("Mã Sản Phẩm");
@@ -210,6 +210,12 @@ public class ProductView extends javax.swing.JFrame {
         txtsoluong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtsoluongActionPerformed(evt);
+            }
+        });
+
+        txtdonvi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtdonviActionPerformed(evt);
             }
         });
 
@@ -460,6 +466,10 @@ public class ProductView extends javax.swing.JFrame {
 //    	        controller.updateProductTable(selectedCategory);
 //    	    }
     }//GEN-LAST:event_cboxloaihangActionPerformed
+
+    private void txtdonviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdonviActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtdonviActionPerformed
 
     /**
      * @param args the command line arguments

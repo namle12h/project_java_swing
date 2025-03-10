@@ -16,13 +16,13 @@ public class Customer {
     private String id;
     private String name;
     private String phone;
-    private String email;
+    private String point;
 
-    public Customer(String id, String name, String phone, String email) {
+    public Customer(String id, String name, String phone, String point) {
         this.id = id;
         this.name = name;
         this.phone = phone;
-        this.email = email;
+        this.point = point;
     }
 
     // Getters and setters
@@ -51,11 +51,11 @@ public class Customer {
     }
 
     public String getEmail() {
-        return email;
+        return point;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String point) {
+        this.point = point;
     }
 
     @Override
