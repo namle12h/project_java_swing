@@ -32,7 +32,8 @@ public class CustomerDAO {
                         rs.getString("id"),
                         rs.getString("name"),
                         rs.getString("phone"),
-                        rs.getString("points")
+                        rs.getString("email"),
+                        rs.getString("point")
                 );
                 customers.add(customer);
             }
@@ -102,7 +103,8 @@ public class CustomerDAO {
                         rs.getString("id"),
                         rs.getString("name"),
                         rs.getString("phone"),
-                        rs.getString("points")
+                        rs.getString("email"),
+                        rs.getString("point")
                 );
             }
         } catch (SQLException e) {

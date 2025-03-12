@@ -12,22 +12,65 @@ import javax.swing.JTextField;
  */
 public class InventoryView extends javax.swing.JFrame {
 
-    public JTextField getTxtstockquantity() {
-        return txtstockquantity;
+    public javax.swing.JButton getBtnAdd() {
+        return btnadd;
     }
 
-    public JTextField getTxtmasp() {
+    public javax.swing.JButton getBtnUpdate() {
+        return btnupdate;
+    }
+
+    public javax.swing.JButton getBtnSave() {
+        return btnsave;
+    }
+
+    public javax.swing.JButton getBtnDelete() {
+        return btndelete;
+    }
+
+    public javax.swing.JTable getTable() {
+        return tbinventory;
+    }
+
+    public JTextField getQuantityInStock() {
+        return txtsoluong;
+    }
+
+    public JTextField getProductID() {
         return txtmasp;
     }
 
-    public void setTxtmasp(JTextField txtmasp) {
+    public JTextField getProductPrice() {
+        return txtgia;
+    }
+
+    public JTextField getProductUnit() {
+        return txthansd;
+    }
+
+    public JTextField getProductName() {
+        return txtnamesp;
+    }
+
+    public void setProductID(JTextField txtmasp) {
         this.txtmasp = txtmasp;
     }
 
-    public void setTxtstockquantity(JTextField txtstockquantity) {
-        this.txtstockquantity = txtstockquantity;
+    public void setProductPrice(JTextField txtgia) {
+        this.txtgia = txtgia;
     }
-    
+
+    public void setProductUnit(JTextField txthansd) {
+        this.txthansd = txthansd;
+    }
+
+    public void setProductName(JTextField txtnamesp) {
+        this.txtnamesp = txtnamesp;
+    }
+
+    public void setQuantityInStock(JTextField txtsoluong) {
+        this.txtsoluong = txtsoluong;
+    }
 
     /**
      * Creates new form NewJFrame
@@ -60,7 +103,9 @@ public class InventoryView extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtmasp = new javax.swing.JTextField();
         txtnamesp = new javax.swing.JTextField();
+        txthansd = new javax.swing.JTextField();
         txtsoluong = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -118,13 +163,13 @@ public class InventoryView extends javax.swing.JFrame {
 
         tbinventory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Hàng Tồn Kho"
+                "Id", "name", "price", "quantity", "unit"
             }
         ));
         jScrollPane1.setViewportView(tbinventory);
@@ -141,7 +186,7 @@ public class InventoryView extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Số Lượng");
+        jLabel4.setText("Hạn Sử Dụng");
 
         txtmasp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,11 +200,19 @@ public class InventoryView extends javax.swing.JFrame {
             }
         });
 
+        txthansd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txthansdActionPerformed(evt);
+            }
+        });
+
         txtsoluong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtsoluongActionPerformed(evt);
             }
         });
+
+        jLabel5.setText("Số Lượng");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -174,22 +227,28 @@ public class InventoryView extends javax.swing.JFrame {
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtnamesp, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtmasp, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtgia, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnadd)
-                            .addComponent(btnupdate, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btndelete)
-                            .addComponent(btnsave))
-                        .addContainerGap(22, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtnamesp, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtmasp, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtgia, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txthansd, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnadd)
+                                    .addComponent(btnupdate, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btndelete)
+                                    .addComponent(btnsave))
+                                .addContainerGap(22, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -219,13 +278,17 @@ public class InventoryView extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)))
+                            .addComponent(jLabel5)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(87, 87, 87)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnupdate, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnsave, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txthansd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,8 +303,11 @@ public class InventoryView extends javax.swing.JFrame {
 
     private void btnsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveActionPerformed
         // TODO add your handling code here:
-        txtstockquantity.setText("");
+        txtgia.setText("");
+        txthansd.setText("");
         txtmasp.setText("");
+        txtnamesp.setText("");
+        txtsoluong.setText("");
     }//GEN-LAST:event_btnsaveActionPerformed
 
     private void btndeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteActionPerformed
@@ -267,6 +333,10 @@ public class InventoryView extends javax.swing.JFrame {
     private void txtnamespActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnamespActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtnamespActionPerformed
+
+    private void txthansdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txthansdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txthansdActionPerformed
 
     private void txtsoluongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtsoluongActionPerformed
         // TODO add your handling code here:
@@ -317,21 +387,16 @@ public class InventoryView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbinventory;
     private javax.swing.JTextField txtgia;
+    private javax.swing.JTextField txthansd;
     private javax.swing.JTextField txtmasp;
     private javax.swing.JTextField txtnamesp;
     private javax.swing.JTextField txtsoluong;
     // End of variables declaration//GEN-END:variables
 
-    public Object btnaddActionPerformed() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public Object btnupdateActionPerformed() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

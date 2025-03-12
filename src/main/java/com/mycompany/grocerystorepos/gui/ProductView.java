@@ -22,7 +22,6 @@ public class ProductView extends javax.swing.JFrame {
         return btnadd;
     }
 
-    
     public javax.swing.JButton getBtnUpdate() {
         return btnupdate;
     }
@@ -46,7 +45,7 @@ public class ProductView extends javax.swing.JFrame {
     public JComboBox<String> getCategoryComboBox() {
         return cboxloaihang;
     }
-    
+
     public String getProductName() {
         return txtnamesp.getText();
     }
@@ -94,16 +93,22 @@ public class ProductView extends javax.swing.JFrame {
     public void setSupplier(String supplier) {
         txtmancc.setText(supplier);
     }
-    public void setCategory(String category) {  cboxloaihang.setSelectedItem(category);  }
-   
-    public void setMinStock(String minstock) {  txtminstock.setText(minstock);  }
+
+    public void setCategory(String category) {
+        cboxloaihang.setSelectedItem(category);
+    }
+
+    public void setMinStock(String minstock) {
+        txtminstock.setText(minstock);
+    }
+
     public void updateCategoryComboBox(List<String> categories) {
         cboxloaihang.removeAllItems(); // Xóa danh mục cũ
         for (String category : categories) {
             cboxloaihang.addItem(category);
         }
     }
-    
+
     private void loadCategories() {
         ProductDAO productDAO = new ProductDAO();
         ArrayList<String> categories = (ArrayList<String>) productDAO.getAllCategories();
@@ -115,15 +120,17 @@ public class ProductView extends javax.swing.JFrame {
 
     public ProductView() {
         initComponents();
-        
-    }
-    
-    
-    
-    
-    public String getCategory() { return (String) cboxloaihang.getSelectedItem(); }
 
-        public String getMinStock() { return (String) txtminstock.getText(); }
+    }
+
+    public String getCategory() {
+        return (String) cboxloaihang.getSelectedItem();
+    }
+
+    public String getMinStock() {
+        return (String) txtminstock.getText();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -440,8 +447,6 @@ public class ProductView extends javax.swing.JFrame {
         txtmancc.setText("");
         cboxloaihang.setSelectedItem("");
         txtminstock.setText("");
-        
-     
 
 
     }//GEN-LAST:event_btnsaveActionPerformed
@@ -459,7 +464,7 @@ public class ProductView extends javax.swing.JFrame {
 //        {
 //            cboxloaihang.addItem(category);
 //        }
-        
+
 //    	  String selectedCategory = (String) cboxloaihang.getSelectedItem();
 //    	    if (selectedCategory != null) {
 //    	        ProductController controller = new ProductController(this, new ProductDAO());

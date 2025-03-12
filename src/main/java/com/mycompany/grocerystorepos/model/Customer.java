@@ -16,12 +16,14 @@ public class Customer {
     private String id;
     private String name;
     private String phone;
+    private String email;
     private String point;
 
-    public Customer(String id, String name, String phone, String point) {
+    public Customer(String id, String name, String phone, String email, String point) {
         this.id = id;
         this.name = name;
         this.phone = phone;
+        this.email = email;
         this.point = point;
     }
 
@@ -51,13 +53,22 @@ public class Customer {
     }
 
     public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPoint() {
         return point;
     }
 
-    public void setEmail(String point) {
+    public void setPoint(String point) {
         this.point = point;
     }
 
+    
     @Override
     public String toString() {
         return id + " - " + name;

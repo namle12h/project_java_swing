@@ -34,7 +34,7 @@ public class CustomerController {
     }
 
     private void loadCustomers() {
-        DefaultTableModel tableModel = view.getTableModel();
+        DefaultTableModel tableModel = (DefaultTableModel) view.getTable().getModel();
         tableModel.setRowCount(0);
         List<Customer> customers = model.getAllCustomers();
         for (Customer c : customers) {
@@ -47,11 +47,12 @@ public class CustomerController {
     String id = view.getCusID();
     String name = view.getCusName();
     String phone = view.getCusPhone();
+    String email = view.getCusEmail();
     String point = view.getCusPoints();
 
     private void addCustomer() {
 
-        Customer newCustomer = new Customer(id, name, phone, point);
+        Customer newCustomer = new Customer(id, name, phone, email, point);
         if (model.addCustomer(newCustomer)) {
             JOptionPane.showMessageDialog(view, "Thêm khách hàng thành công!");
             loadCustomers();
@@ -62,7 +63,7 @@ public class CustomerController {
 
     private void updateCustomer() {
 
-        Customer updatedCustomer = new Customer(id, name, phone, point);
+        Customer updatedCustomer = new Customer(id, name, phone, email, point);
         if (model.updateCustomer(updatedCustomer)) {
             JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thành công!");
             loadCustomers();
@@ -85,10 +86,10 @@ public class CustomerController {
         view.getTable().getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             int selectedRow = view.getTable().getSelectedRow();
             if (selectedRow != -1) {
-                view.setCusID(String.valueOf(view.getTableModel().getValueAt(selectedRow, 0)));
-                view.setCusName((String) view.getTableModel().getValueAt(selectedRow, 1));
-                view.setCusPhone(String.valueOf(view.getTableModel().getValueAt(selectedRow, 2)));
-                view.setCusPoint((String) view.getTableModel().getValueAt(selectedRow, 3));
+                view.setCusID(String.valueOf(view.getTable().getValueAt(selectedRow, 0)));
+                view.setCusName((String) view.getTable().getValueAt(selectedRow, 1));
+                view.setCusPhone(String.valueOf(view.getTable().getValueAt(selectedRow, 2)));
+                view.setCusPoint((String) view.getTable().getValueAt(selectedRow, 3));
             }
         });
     }

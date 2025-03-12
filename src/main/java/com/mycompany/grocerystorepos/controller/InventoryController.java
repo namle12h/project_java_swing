@@ -13,10 +13,8 @@ import com.mycompany.grocerystorepos.model.Inventory;
 import com.mycompany.grocerystorepos.gui.InventoryView;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 public class InventoryController {
 
@@ -27,35 +25,40 @@ public class InventoryController {
         this.view = view;
         this.model = model;
 
-        view.btnaddActionPerformed().addActionListener(e -> addInventory());
-        view.btnupdateActionPerformed().addActionListener(e -> updateInventory());
+        // Sử dụng các getter phù hợp để lấy JButton từ view
+        view.getBtnAdd().addActionListener(e -> addInventory());
+        view.getBtnUpdate().addActionListener(e -> updateInventory());
 
         setUpTableSelectionListener();
         loadInventories();
     }
 
     private void loadInventories() {
-        DefaultTableModel tableModel = view.getTableModel();
-        tableModel.setRowCount(0);
+        DefaultTableModel tableModel = (DefaultTableModel) view.getTable().getModel(); // Lấy model từ bảng
+        tableModel.setRowCount(0); // Xóa dữ liệu cũ
 
-        List<Inventory> inventories = (List<Inventory>) model.getAllInventories();
+        List<Inventory> inventories = model.getAllInventories();
         for (Inventory inv : inventories) {
             tableModel.addRow(new Object[]{
-                inv.getProductCode(), inv.getProductName(),
-                inv.getPrice(), inv.getQuantity(), inv.getUnit()
+                inv.getProductCode(),
+                inv.getProductName(),
+                inv.getPrice(),
+                inv.getQuantity(),
+                inv.getUnit()
             });
         }
     }
+    String productCode = view.getProductID().getText();
+    String productName = view.getProductName().getText();
+    double price = Double.parseDouble(view.getProductPrice().getText());
+    int quantity = Integer.parseInt(view.getQuantityInStock().getText());
+    String unit = view.getProductUnit().getText();
+
+    Inventory inventory = new Inventory(productCode, productName, price, quantity, unit);
 
     private void addInventory() {
-        try {
-            String productCode = view.getProductID();
-            String productName = view.getProductName();
-            double price = Double.parseDouble(view.getProductPrice());
-            int quantity = Integer.parseInt(view.getQuantityInStock());
-            String unit = view.getProductUnit();
 
-            Inventory inventory = new Inventory(productCode, productName, price, quantity, unit);
+        try {
 
             if (model.addInventory(inventory)) {
                 JOptionPane.showMessageDialog(view, "Thêm sản phẩm vào kho thành công!");
@@ -70,13 +73,6 @@ public class InventoryController {
 
     private void updateInventory() {
         try {
-            String productCode = view.getProductID();
-            String productName = view.getProductName();
-            double price = Double.parseDouble(view.getProductPrice());
-            int quantity = Integer.parseInt(view.getQuantityInStock());
-            String unit = view.getProductUnit();
-
-            Inventory inventory = new Inventory(productCode, productName, price, quantity, unit);
 
             if (model.updateInventory(inventory)) {
                 JOptionPane.showMessageDialog(view, "Cập nhật kho hàng thành công!");
@@ -90,16 +86,16 @@ public class InventoryController {
     }
 
     private void setUpTableSelectionListener() {
-        view.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int selectedRow = view.getTable().getSelectedRow();
-                if (selectedRow != -1) {
-                    view.setProductID(view.getTableModel().getValueAt(selectedRow, 0).toString());
-                    view.setProductName(view.getTableModel().getValueAt(selectedRow, 1).toString());
-                    view.setProductPrice(view.getTableModel().getValueAt(selectedRow, 2).toString());
-                    view.setQuantityInStock(view.getTableModel().getValueAt(selectedRow, 3).toString());
-                    view.setProductUnit(view.getTableModel().getValueAt(selectedRow, 4).toString());
+        JTable table = view.getTable();
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) { // Tránh xử lý sự kiện nhiều lần
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
+                    view.getProductID().setText(table.getValueAt(selectedRow, 0).toString());
+                    view.getProductName().setText(table.getValueAt(selectedRow, 1).toString());
+                    view.getProductPrice().setText(table.getValueAt(selectedRow, 2).toString());
+                    view.getQuantityInStock().setText(table.getValueAt(selectedRow, 3).toString());
+                    view.getProductUnit().setText(table.getValueAt(selectedRow, 4).toString());
                 }
             }
         });

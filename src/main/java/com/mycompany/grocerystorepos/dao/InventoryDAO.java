@@ -8,6 +8,7 @@ package com.mycompany.grocerystorepos.dao;
  *
  * @author LENOVO
  */
+import com.mycompany.grocerystorepos.conDB.connectDB;
 import com.mycompany.grocerystorepos.model.Inventory;
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,11 +29,14 @@ public class InventoryDAO {
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                Inventory inventory = new Inventory(
-                        rs.getInt("ProductID"),
-                        rs.getInt("Quantity_in_stock")
+                Inventory item = new Inventory(
+                        rs.getString("productCode"),
+                        rs.getString("productName"),
+                        rs.getDouble("price"),
+                        rs.getInt("quantity"),
+                        rs.getString("unit")
                 );
-                inventories.add(inventory);
+                inventories.add(item);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -49,8 +53,11 @@ public class InventoryDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return new Inventory(
-                        rs.getInt("ProductID"),
-                        rs.getInt("Quantity_in_stock")
+                        rs.getString("productCode"),
+                        rs.getString("productName"),
+                        rs.getDouble("price"),
+                        rs.getInt("quantity"),
+                        rs.getString("unit")
                 );
             }
         } catch (SQLException e) {
@@ -60,13 +67,15 @@ public class InventoryDAO {
     }
 
     // Cập nhật số lượng tồn kho của một sản phẩm
-    public boolean updateInventory(Inventory inventory) {
-        String query = "UPDATE Inventory SET Quantity_in_stock = ? WHERE ProductID = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, inventory.getQuantityInStock());
-            pstmt.setInt(2, inventory.getProductID());
-            int rowsAffected = pstmt.executeUpdate();
+    public boolean updateInventory(Inventory item) {
+        String sql = "UPDATE Inventory SET productName = ?, price = ?, quantity = ?, unit = ? WHERE productCode = ?";
+        try (Connection con = connectDB.connect(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, item.getProductName());
+            ps.setDouble(2, item.getPrice());
+            ps.setInt(3, item.getQuantity());
+            ps.setString(4, item.getUnit());
+            ps.setString(5, item.getProductCode());
+            int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,17 +84,32 @@ public class InventoryDAO {
     }
 
     // Thêm mới một bản ghi tồn kho (ví dụ khi có sản phẩm mới)
-    public boolean addInventory(Inventory inventory) {
-        String query = "INSERT INTO Inventory (ProductID, Quantity_in_stock) VALUES (?, ?)";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, inventory.getProductID());
-            pstmt.setInt(2, inventory.getQuantityInStock());
-            int rowsAffected = pstmt.executeUpdate();
+    public boolean addInventory(Inventory item) {
+        String sql = "INSERT INTO Inventory (productCode, productName, price, quantity, unit) VALUES (?, ?, ?, ?, ?)";
+        try (Connection con = connectDB.connect(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, item.getProductCode());
+            ps.setString(2, item.getProductName());
+            ps.setDouble(3, item.getPrice());
+            ps.setInt(4, item.getQuantity());
+            ps.setString(5, item.getUnit());
+            int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
+    public boolean deleteInventory(String productCode) {
+        String sql = "DELETE FROM Inventory WHERE productCode = ?";
+        try (Connection con = connectDB.connect(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, productCode);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
