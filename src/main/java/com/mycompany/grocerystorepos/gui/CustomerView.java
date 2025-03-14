@@ -7,6 +7,7 @@ package com.mycompany.grocerystorepos.gui;
 import com.mycompany.grocerystorepos.model.Customer;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -86,7 +87,7 @@ public class CustomerView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
 
         initTable();
-        initData();
+//        initData();
     }
 
     private void fillTable() {
@@ -101,13 +102,12 @@ public class CustomerView extends javax.swing.JFrame {
         tblModel.fireTableDataChanged();
     }
 
-    private void initData() {
-        list.add(new Customer("15", "asdasd", "124", "42134", "123"));
-        list.add(new Customer("14", "asdasd", "124", "42134", "123"));
-        list.add(new Customer("13", "asdasd", "124", "42134", "123"));
-        list.add(new Customer("12", "asdasd", "124", "42134", "123"));
-    }
-
+//    private void initData() {
+//        list.add(new Customer("15", "asdasd", "124", "42134", "123"));
+//        list.add(new Customer("16", "asdasd", "124", "42134", "123"));
+//        list.add(new Customer("13", "asdasd", "124", "42134", "123"));
+//        list.add(new Customer("12", "asdasd", "124", "42134", "123"));
+//    }
     private void initTable() {
         tblModel = new DefaultTableModel();
         String[] columns = new String[]{"id", "user", "pass", "adqw", "ádiagw"};
@@ -361,6 +361,33 @@ public class CustomerView extends javax.swing.JFrame {
 
     private void btnaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnaddActionPerformed
         // TODO add your handling code here:
+
+//        CustomerView view = new CustomerView();  // Đảm bảo view được tạo trước
+//        CustomerDAO model = new CustomerDAO();
+//        CustomerController controller = new CustomerController(view, model);
+//        controller.addCustomer();
+        StringBuilder sb = new StringBuilder();
+        if (txtnamekhachhang.getText().equals("")) {
+            sb.append("Username is empty\n");
+        }
+        if (sb.length() > 0) {
+            JOptionPane.showMessageDialog(this, sb.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Customer customer = new Customer(
+                txtmakhachhang.getText().trim(),
+                txtnamekhachhang.getText().trim(),
+                txtsodt.getText().trim(),
+                txtemail.getText().trim(),
+                txtdiemthuong.getText().trim()
+        );
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+
+        list.add(customer);
+        fillTable();
+        
     }//GEN-LAST:event_btnaddActionPerformed
 
     private void btnsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveActionPerformed
@@ -382,7 +409,7 @@ public class CustomerView extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        fillTable();
+//        fillTable();
     }//GEN-LAST:event_formWindowOpened
 
     /**

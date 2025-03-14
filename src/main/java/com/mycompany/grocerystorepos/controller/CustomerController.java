@@ -22,6 +22,12 @@ public class CustomerController {
     private CustomerDAO model;
 
     public CustomerController(CustomerView view, CustomerDAO model) {
+        if (view == null) {
+            throw new IllegalArgumentException("CustomerView không được null!");
+        }
+        if (model == null) {
+            throw new IllegalArgumentException("CustomerDAO không được null!");
+        }
         this.view = view;
         this.model = model;
 
@@ -50,7 +56,7 @@ public class CustomerController {
     String email = view.getCusEmail();
     String point = view.getCusPoints();
 
-    private void addCustomer() {
+    public void addCustomer() {
 
         Customer newCustomer = new Customer(id, name, phone, email, point);
         if (model.addCustomer(newCustomer)) {
