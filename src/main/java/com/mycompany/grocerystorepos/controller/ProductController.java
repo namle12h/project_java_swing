@@ -29,10 +29,10 @@ public class ProductController {
         List<String> categories = model.getAllCategories();
         view.updateCategoryComboBox(categories);
         
-//        view.getCategoryComboBox().addActionListener(e -> {
-//            String selectedCategory = (String) view.getCategoryComboBox().getSelectedItem();
-//            updateProductTable(selectedCategory);
-//        });
+        view.getCategoryComboBox().addActionListener(e -> {
+            String selectedCategory = (String) view.getCategoryComboBox().getSelectedItem();
+            updateProductTable(selectedCategory);
+        });
     }
 
     private void loadProducts() {

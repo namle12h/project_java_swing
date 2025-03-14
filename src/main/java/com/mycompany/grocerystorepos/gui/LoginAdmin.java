@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -180,38 +181,57 @@ public class LoginAdmin extends javax.swing.JFrame implements ActionListener {
 
 //     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
 //         // TODO add your handling code here:
-//         Connection conn = null;
-//         Statement stmt = null;
-//         ResultSet rs = null;
-//         String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;user=sa;password=123;encrypt=false;";
-//         try {
-//             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//             conn = DriverManager.getConnection(connectionUrl);
-//             String username = edtUsername.getText();
-//             String password = edtPassword.getText();
-//             stmt = conn.createStatement();
-//             String SQL = "SELECT * FROM admin where username='" + username + "'and password='" + password + "'";
-//             rs = stmt.executeQuery(SQL);
-//             // Process the result set
-//             if (rs.next()) {
-//                 dispose();
-// //                HomePage hPage = new HomePage();
-// //                 EmployeeView emView = new EmployeeView();
-//                   Employee1View emView1 = new Employee1View();
-//                  JOptionPane.showMessageDialog(rootPane, "Login success");
-// //                hPage.show();
-//                  Employee1DAO empDao = new Employee1DAO();
-//                  new Employee1Controller(emView1, empDao);
-//                 emView1.show();
-//             } else {
-//                 JOptionPane.showMessageDialog(this, "username or password error");
-//                 edtUsername.setText("");
-//                 edtPassword.setText("");
-//             }
-//             conn.close();
-//         } catch (Exception e) {
-//             System.out.println(e.getMessage());
-//         }
+    public class LoginHandler {
+
+        private static final String CONNECTION_URL
+                = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;user=sa;password=123;encrypt=false;";
+
+        public void login() {
+            String username = edtUsername.getText().trim();
+            String password = edtPassword.getText().trim();
+
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin");
+                return;
+            }
+
+            String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
+
+            try (Connection conn = DriverManager.getConnection(CONNECTION_URL); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(null, "Đăng nhập thành công!");
+
+                        // Mở giao diện chính
+                        HomePage hPage = new HomePage();
+                        EmployeeView emView = new EmployeeView();
+                        Employee1View emView1 = new Employee1View();
+
+                        hPage.setVisible(true);
+
+                        Employee1DAO empDao = new Employee1DAO();
+                        new Employee1Controller(emView1, empDao);
+                        emView1.setVisible(true);
+
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Tên đăng nhập hoặc mật khẩu sai!");
+                        edtUsername.setText("");
+                        edtPassword.setText("");
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy driver JDBC!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Lỗi kết nối CSDL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 //     }//GEN-LAST:event_btnLoginActionPerformed
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
         Connection conn = null;

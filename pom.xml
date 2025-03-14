@@ -19,5 +19,10 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>10.2.1.jre8</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE240</version>
+        </dependency>
     </dependencies>
 </project>

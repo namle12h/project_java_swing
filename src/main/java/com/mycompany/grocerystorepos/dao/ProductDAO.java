@@ -125,26 +125,9 @@ public class ProductDAO {
     
 
     // 🛠️ Lấy danh sách danh mục sản phẩm
-//    public ArrayList<String> getAllCategories() {
-//        ArrayList<String> categories = new ArrayList<>();
-//        String query = "SELECT DISTINCT Category FROM Product";
-//
-//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-//             Statement stmt = conn.createStatement();
-//             ResultSet rs = stmt.executeQuery(query)) {
-//
-//            while (rs.next()) {
-//                categories.add(rs.getString("Category"));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return categories;
-//    }
-    
-    public List<String> getAllCategories() {
-        List<String> categories = new ArrayList<>();
-        String query = "SELECT DISTINCT Category FROM Product"; // Lấy tất cả danh mục có trong database
+    public ArrayList<String> getAllCategories() {
+        ArrayList<String> categories = new ArrayList<>();
+        String query = "SELECT DISTINCT Category FROM Product";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
@@ -158,6 +141,23 @@ public class ProductDAO {
         }
         return categories;
     }
+    
+//    public List<String> getAllCategories() {
+//        List<String> categories = new ArrayList<>();
+//        String query = "SELECT DISTINCT Category FROM Product"; // Lấy tất cả danh mục có trong database
+//
+//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+//             Statement stmt = conn.createStatement();
+//             ResultSet rs = stmt.executeQuery(query)) {
+//
+//            while (rs.next()) {
+//                categories.add(rs.getString("Category"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return categories;
+//    }
 
     
  // 🛠️ Lấy danh sách sản phẩm theo danh mục
