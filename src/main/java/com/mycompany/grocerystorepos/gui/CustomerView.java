@@ -4,10 +4,18 @@
  */
 package com.mycompany.grocerystorepos.gui;
 
+import com.mycompany.grocerystorepos.controller.CustomerController;
+import com.mycompany.grocerystorepos.dao.CustomerDAO;
 import com.mycompany.grocerystorepos.model.Customer;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -41,7 +49,7 @@ public class CustomerView extends javax.swing.JFrame {
     }
 
     public String getCusID() {
-        return txtmakhachhang.getText();
+        return txtmakhachhang.getText().trim();
     }
 
     public String getCusPhone() {
@@ -52,7 +60,7 @@ public class CustomerView extends javax.swing.JFrame {
         return txtemail.getText();
     }
 
-    public String getCusPoints() {
+    public String getCusPoint() {
         return txtdiemthuong.getText();
     }
 
@@ -60,8 +68,8 @@ public class CustomerView extends javax.swing.JFrame {
         txtmakhachhang.setText(id);
     }
 
-    public void setCusPhone(String phones) {
-        txtsodt.setText(phones);
+    public void setCusPhone(String phone) {
+        txtsodt.setText(phone);
     }
 
     public void setCusName(String name) {
@@ -75,30 +83,32 @@ public class CustomerView extends javax.swing.JFrame {
     public void setCusPoint(String point) {
         txtdiemthuong.setText(point);
     }
+    private List<Customer> list = new ArrayList<>();
+    private DefaultTableModel tblModel;
+    private final CustomerController controller; // Controller quản lý dữ liệu
 
     /**
      * Creates new form CustomerView
      */
-    private List<Customer> list = new ArrayList<>();
-    private DefaultTableModel tblModel;
-
     public CustomerView() {
         initComponents();
         setLocationRelativeTo(null);
-
+        CustomerDAO model = new CustomerDAO(); // Model xử lý dữ liệu
+        controller = new CustomerController(this, model); // Controller quản lý view
         initTable();
 //        initData();
     }
 
     private void fillTable() {
-        while (tbcustomer.getRowCount() > 0) {
-            tblModel.removeRow(0);
-        }
-
         for (Customer cus : list) {
-            tblModel.addRow(new String[]{cus.getId(), cus.getEmail(), cus.getName(), cus.getPhone(), cus.getPoint()});
+            tblModel.addRow(new Object[]{
+                cus.getId(),
+                cus.getName(),
+                cus.getPhone(),
+                cus.getEmail(),
+                cus.getPoint()
+            });
         }
-
         tblModel.fireTableDataChanged();
     }
 
@@ -110,9 +120,8 @@ public class CustomerView extends javax.swing.JFrame {
 //    }
     private void initTable() {
         tblModel = new DefaultTableModel();
-        String[] columns = new String[]{"id", "user", "pass", "adqw", "ádiagw"};
+        String[] columns = new String[]{"id", "name", "phone", "email", "point"};
         tblModel.setColumnIdentifiers(columns);
-
         tbcustomer.setModel(tblModel);
     }
 
@@ -151,6 +160,7 @@ public class CustomerView extends javax.swing.JFrame {
             }
         });
 
+        txtmakhachhang.setText("Nhập mã khách hàng...");
         txtmakhachhang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtmakhachhangActionPerformed(evt);
@@ -183,18 +193,21 @@ public class CustomerView extends javax.swing.JFrame {
 
         jLabel7.setText("Số Điên Thoại");
 
+        txtnamekhachhang.setText("Nhập họ tên...");
         txtnamekhachhang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtnamekhachhangActionPerformed(evt);
             }
         });
 
+        txtsodt.setText("Nhập số điện thoại...");
         txtsodt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtsodtActionPerformed(evt);
             }
         });
 
+        txtdiemthuong.setText("Nhập điểm thưởng...");
         txtdiemthuong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtdiemthuongActionPerformed(evt);
@@ -204,6 +217,11 @@ public class CustomerView extends javax.swing.JFrame {
         btnupdate.setText("UPDATE");
         btnupdate.setMaximumSize(new java.awt.Dimension(72, 23));
         btnupdate.setMinimumSize(new java.awt.Dimension(72, 23));
+        btnupdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnupdateActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Mã Khách Hàng");
 
@@ -246,11 +264,12 @@ public class CustomerView extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Id", "name", "phone", "email", "points"
+                "Id", "name", "phone", "email", "point"
             }
         ));
         jScrollPane1.setViewportView(tbcustomer);
 
+        txtemail.setText("Nhập email...");
         txtemail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtemailActionPerformed(evt);
@@ -310,19 +329,6 @@ public class CustomerView extends javax.swing.JFrame {
                     .addComponent(txtmakhachhang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtnamekhachhang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(txtsodt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtemail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(39, 39, 39)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnadd, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -330,12 +336,25 @@ public class CustomerView extends javax.swing.JFrame {
                         .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnsave, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btndelete, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(txtdiemthuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37)
+                            .addComponent(btndelete, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtnamekhachhang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtsodt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtemail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtdiemthuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(51, 51, 51)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -362,18 +381,50 @@ public class CustomerView extends javax.swing.JFrame {
     private void btnaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnaddActionPerformed
         // TODO add your handling code here:
 
-//        CustomerView view = new CustomerView();  // Đảm bảo view được tạo trước
-//        CustomerDAO model = new CustomerDAO();
-//        CustomerController controller = new CustomerController(view, model);
-//        controller.addCustomer();
         StringBuilder sb = new StringBuilder();
-        if (txtnamekhachhang.getText().equals("")) {
-            sb.append("Username is empty\n");
+// Kiểm tra các trường không được để trống
+        if (txtmakhachhang.getText().trim().isEmpty()) {
+            sb.append("Mã khách hàng không được để trống\n");
         }
+        if (txtnamekhachhang.getText().trim().isEmpty()) {
+            sb.append("Tên khách hàng không được để trống\n");
+        }
+        if (txtsodt.getText().trim().isEmpty()) {
+            sb.append("Số điện thoại không được để trống\n");
+        }
+        if (txtemail.getText().trim().isEmpty()) {
+            sb.append("Email không được để trống\n");
+        }
+        if (txtdiemthuong.getText().trim().isEmpty()) {
+            sb.append("Điểm thưởng không được để trống\n");
+        }
+
+// Nếu có lỗi, hiển thị thông báo và dừng lại
         if (sb.length() > 0) {
-            JOptionPane.showMessageDialog(this, sb.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, sb.toString(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+// Kiểm tra định dạng số điện thoại
+        if (!txtsodt.getText().matches("\\d{10,11}")) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10-11 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+// Kiểm tra định dạng email
+        if (!txtemail.getText().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            JOptionPane.showMessageDialog(null, "Email không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+// Kiểm tra điểm thưởng có phải là số không
+        try {
+            Integer.valueOf(txtdiemthuong.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Điểm thưởng phải là số nguyên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+// Tạo đối tượng khách hàng
         Customer customer = new Customer(
                 txtmakhachhang.getText().trim(),
                 txtnamekhachhang.getText().trim(),
@@ -384,10 +435,18 @@ public class CustomerView extends javax.swing.JFrame {
         if (list == null) {
             list = new ArrayList<>();
         }
-
+// Kiểm tra trùng mã khách hàng
+        for (Customer c : list) {
+            if (c.getId().equalsIgnoreCase(customer.getId())) {
+                JOptionPane.showMessageDialog(null, "Mã khách hàng đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
         list.add(customer);
+        controller.loadCustomers();
         fillTable();
-        
+        controller.addCustomer();
+        JOptionPane.showMessageDialog(null, "Thêm khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnaddActionPerformed
 
     private void btnsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveActionPerformed
@@ -396,11 +455,32 @@ public class CustomerView extends javax.swing.JFrame {
         txtsodt.setText("");
         txtdiemthuong.setText("");
         txtmakhachhang.setText("");
-
+        txtemail.setText("");
     }//GEN-LAST:event_btnsaveActionPerformed
 
     private void btndeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteActionPerformed
         // TODO add your handling code here:
+        int selectedRow = tbcustomer.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa khách hàng này?",
+                "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String customerId = tbcustomer.getValueAt(selectedRow, 0).toString(); // Lấy ID khách hàng từ bảng
+
+            CustomerDAO customerDAO = new CustomerDAO();
+            boolean success = customerDAO.deleteCustomer(customerId);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                SwingUtilities.invokeLater(() -> controller.loadCustomers()); // Load lại bảng sau khi xóa
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
     }//GEN-LAST:event_btndeleteActionPerformed
 
     private void txtemailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtemailActionPerformed
@@ -410,7 +490,44 @@ public class CustomerView extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
 //        fillTable();
+        controller.loadCustomers();
+        /////////////////////////////////////////////////////////////////////////
+        JTextField[] fields = {txtemail, txtmakhachhang, txtnamekhachhang, txtsodt, txtdiemthuong};
+        String[] placeholders = {"Nhập email...", "Nhập mã khách hàng...", "Nhập họ tên...", "Nhập số điện thoại...", "Nhập điểm thưởng..."};
+
+        for (int i = 0; i < fields.length; i++) {
+            setPlaceholder(fields[i], placeholders[i]);
+        }
+    }
+
+// Hàm dùng chung để đặt placeholder cho JTextField
+    private void setPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new java.awt.event.FocusListener() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
+
     }//GEN-LAST:event_formWindowOpened
+
+    private void btnupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnupdateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnupdateActionPerformed
 
     /**
      * @param args the command line arguments

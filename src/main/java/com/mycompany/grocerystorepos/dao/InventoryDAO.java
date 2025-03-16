@@ -19,7 +19,7 @@ public class InventoryDAO {
 
     private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123";
+    private static final String PASSWORD = "12345";
 
     // Lấy danh sách tồn kho của tất cả sản phẩm
     public List<Inventory> getAllInventories() {

@@ -18,19 +18,19 @@ public class CustomerDAO {
 
     private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123";
+    private static final String PASSWORD = "12345";
 
     // Lấy danh sách tất cả khách hàng từ bảng Customer
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
-        String query = "SELECT id, name, phone, points FROM Customer";
+        String query = "SELECT * FROM Customer";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
                 Customer customer = new Customer(
-                        rs.getString("id"),
-                        rs.getString("name"),
+                        rs.getString("CustomerID"),
+                        rs.getString("CustomerName"),
                         rs.getString("phone"),
                         rs.getString("email"),
                         rs.getString("point")
@@ -45,41 +45,61 @@ public class CustomerDAO {
 
     // Thêm mới một khách hàng vào bảng Customer
     public boolean addCustomer(Customer customer) {
-        String query = "INSERT INTO Customer (id, name, phone, points) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
+        String checkQuery = "SELECT COUNT(*) FROM Customer WHERE CustomerID = ?";
+        String insertQuery = "INSERT INTO Customer (CustomerID, CustomerName, phone, email, point) VALUES (?, ?, ?, ?, ?)";
 
-            pstmt.setString(1, customer.getId());
-            pstmt.setString(2, customer.getName());
-            pstmt.setString(3, customer.getPhone());
-            pstmt.setString(4, customer.getEmail());
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+            conn.setAutoCommit(false); // 🔥 Tắt AutoCommit
+            // Kiểm tra ID có tồn tại chưa
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
+                checkStmt.setString(1, customer.getId());
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    System.out.println("❌ ID đã tồn tại, không thể thêm!");
+                    return false;
+                }
+            }
+
+            // Thực hiện thêm nếu ID chưa tồn tại
+            try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
+                pstmt.setString(1, customer.getId());
+                pstmt.setString(2, customer.getName());
+                pstmt.setString(3, customer.getPhone());
+                pstmt.setString(4, customer.getEmail());
+                pstmt.setString(5, customer.getPoint());
+
+                int rowsAffected = pstmt.executeUpdate();
+                conn.commit();
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     // Cập nhật thông tin khách hàng
     public boolean updateCustomer(Customer customer) {
-        String query = "UPDATE Customer SET name = ?, phone = ?, points = ? WHERE id = ?";
+        String query = "UPDATE Customer SET CustomerName = ?, phone = ?, email = ?, point = ? WHERE CustomerID = ?";
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, customer.getName());
             pstmt.setString(2, customer.getPhone());
-            pstmt.setString(3, customer.getEmail());
-            pstmt.setString(4, customer.getId());
+            pstmt.setString(3, customer.getEmail()); // ✅ Thêm email vào đúng vị trí
+            pstmt.setString(4, customer.getPoint()); // ✅ Cập nhật điểm thưởng
+            pstmt.setString(5, customer.getId());  // ✅ ID phải ở vị trí cuối
+
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
-    // Xóa khách hàng theo id
+    // Xóa khách hàng theo CustomerID
     public boolean deleteCustomer(String customerId) {
-        String query = "DELETE FROM Customer WHERE id = ?";
+        String query = "DELETE FROM Customer WHERE CustomerID = ?";
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, customerId);
@@ -91,20 +111,20 @@ public class CustomerDAO {
         return false;
     }
 
-    // Lấy thông tin khách hàng theo id
+    // Lấy thông tin khách hàng theo CustomerID
     public Customer getCustomerById(String customerId) {
-        String query = "SELECT id, name, phone, points FROM Customer WHERE id = ?";
+        String query = "SELECT CustomerID, CustomerName, phone, email, point FROM Customer WHERE CustomerID = ?";
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, customerId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return new Customer(
-                        rs.getString("id"),
-                        rs.getString("name"),
+                        rs.getString("CustomerID"),
+                        rs.getString("CustomerName"),
                         rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("point")
+                        rs.getString("email"), // ✅ Đã thêm đúng `email`
+                        rs.getString("point") // ✅ Đã sửa `point` thành `point`
                 );
             }
         } catch (SQLException e) {
