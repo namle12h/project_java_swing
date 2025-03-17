@@ -122,6 +122,26 @@ public class ProductDAO {
         }
         return null;
     }
+    public List<String> searchProducts(String keyword) {
+    List<String> products = new ArrayList<>();
+    String sql = "SELECT ProductName FROM Product WHERE ProductName LIKE ?";
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setString(1, "%" + keyword + "%"); // Tìm kiếm gần đúng
+        ResultSet rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            products.add(rs.getString("ProductName"));
+        }
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return products;
+}
+
     
 
     // 🛠️ Lấy danh sách danh mục sản phẩm
@@ -189,5 +209,30 @@ public class ProductDAO {
         }
         return products;
     }
+    
+    public Product getProductByName(String productName) {
+    String query = "SELECT * FROM Product WHERE ProductName = ?";
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setString(1, productName);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return new Product(
+                rs.getInt("ProductID"),
+                rs.getString("ProductName"),
+                rs.getDouble("Price"),
+                rs.getInt("Quantity"),
+                rs.getString("Unit"),
+                rs.getString("SupplierID"),
+                rs.getString("Category"),
+                rs.getInt("MinStock")
+            );
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
 
 }

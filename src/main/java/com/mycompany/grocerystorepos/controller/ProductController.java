@@ -35,6 +35,9 @@ public class ProductController {
 //        });
     }
 
+    public List<String> getSuggestions(String keyword) {
+            return model.searchProducts(keyword);
+        }
     private void loadProducts() {
         view.getTableModel().setRowCount(0);
         List<Product> products = model.getAllProducts();
