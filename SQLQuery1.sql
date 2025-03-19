@@ -88,6 +88,8 @@ CREATE TABLE Employee (
     Email NVARCHAR(100)
 );
 
+SELECT * FROM Employee1
+
 -- Bảng Khách hàng (Customer)
 CREATE TABLE Customer (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -213,3 +215,23 @@ VALUES
 
 
 SELECT * FROM Employee1
+
+CREATE TABLE Customer (
+    CustomerID NVARCHAR(50) PRIMARY KEY,
+    CustomerName NVARCHAR(100) NOT NULL,
+    phone NVARCHAR(20) NOT NULL,
+    email NVARCHAR(100),
+    point NVARCHAR(10) NOT NULL
+);
+
+INSERT INTO Customer (CustomerID, CustomerName, phone, email, point) VALUES
+('C001', 'Nguyễn Văn A', '0987654321', 'nguyenvana@gmail.com', '100'),
+('C002', 'Trần Thị B', '0912345678', 'tranthib@gmail.com', '200'),
+('C003', 'Lê Văn C', '0923456789', 'levanc@gmail.com', '50');
+
+SELECT * FROM Customer
+
+SELECT COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'customer';
+

@@ -1,15 +1,19 @@
+D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\CustomerController.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\Employee1Controller.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\EmployeeController.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\ProductController.java
+D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\CustomerDAO.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\Employee1DAO.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\EmployeeDAO.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\ProductDAO.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\GroceryStorePOS.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\ButtonEditor.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\ButtonRenderer.java
+D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\CustomerView.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Employee1View.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\EmployeeView.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\forgetPasswordAdmin.java
+D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Home.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\HomePage.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\LoginAdmin.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\ProductSearchSuggestion.java
@@ -17,6 +21,7 @@ D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Produ
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SaleProductView.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\sgpr.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SuggestFile.java
+D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Customer.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Employee.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Employee1.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Product.java

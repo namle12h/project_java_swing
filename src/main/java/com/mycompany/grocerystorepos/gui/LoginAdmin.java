@@ -234,18 +234,23 @@ public class LoginAdmin extends javax.swing.JFrame implements ActionListener {
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
+                String employeeName = rs.getString("Name");
                 // Lấy quyền của nhân viên
                 String role = rs.getString("Role");
-                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!"+ employeeName);
+
+                  // Cập nhật tên nhân viên vào JLabel lbnhanvien
+//                 lbnhanvien.setText("Nhân viên: " + employeeName);
 
                 dispose(); // Đóng cửa sổ đăng nhập
 
                 // Điều hướng giao diện dựa trên quyền của nhân viên
                 if (role.equals("Thu ngân")) {
-                    ProductView productView = new ProductView();
+                    SaleProductView SaleProductView = new SaleProductView();
+                    SaleProductView.setEmployeeName(employeeName);
                     ProductDAO productDAO = new ProductDAO();
-                    new ProductController(productView, productDAO);
-                    productView.setVisible(true);
+                    new ProductController(SaleProductView, productDAO);
+                    SaleProductView.setVisible(true);
                 } else if (role.equals("Quản lý kho")) {
 //                    InventoryView inventoryView = new InventoryView();
 //                    // Controller cho quản lý kho (tạo nếu chưa có)

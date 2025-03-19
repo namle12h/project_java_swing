@@ -3,6 +3,7 @@ package com.mycompany.grocerystorepos.controller;
 import com.mycompany.grocerystorepos.dao.ProductDAO;
 import com.mycompany.grocerystorepos.model.Product;
 import com.mycompany.grocerystorepos.gui.ProductView;
+import com.mycompany.grocerystorepos.gui.SaleProductView;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -13,6 +14,7 @@ import java.util.List;
 public class ProductController {
     private ProductView view;
     private ProductDAO model;
+    private SaleProductView sview;
 
     public ProductController(ProductView view, ProductDAO model) {
         this.view = view;
@@ -33,6 +35,11 @@ public class ProductController {
 //            String selectedCategory = (String) view.getCategoryComboBox().getSelectedItem();
 //            updateProductTable(selectedCategory);
 //        });
+    }
+    
+    public ProductController(SaleProductView sview, ProductDAO model) {
+        this.sview = sview;
+        this.model = model;
     }
 
     public List<String> getSuggestions(String keyword) {
