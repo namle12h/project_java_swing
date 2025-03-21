@@ -91,6 +91,7 @@ CREATE TABLE Employee (
 SELECT * FROM Employee1
 
 -- Bảng Khách hàng (Customer)
+DROP TABLE Customer 
 CREATE TABLE Customer (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
     FullName NVARCHAR(100),
@@ -121,6 +122,8 @@ CREATE TABLE Invoice_Detail (
     CONSTRAINT FK_InvoiceDetail_Invoice FOREIGN KEY (InvoiceID) REFERENCES Invoice(InvoiceID),
     CONSTRAINT FK_InvoiceDetail_Product FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
+
+
 
 -- Bảng Nhập hàng (Stock_Entry)
 CREATE TABLE Stock_Entry (
@@ -235,3 +238,22 @@ SELECT COLUMN_NAME
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'customer';
 
+
+
+CREATE TABLE invoices (
+    invoice_id INT IDENTITY(1,1) PRIMARY KEY,
+    total_amount Float,
+    discount_amount Float,
+    final_amount Float,
+    invoice_date DATETIME DEFAULT GETDATE()  -- Thay CURRENT_TIMESTAMP bằng GETDATE() trong MSSQL
+);
+
+CREATE TABLE invoice_details (
+    detail_id INT IDENTITY(1,1) PRIMARY KEY,  -- Sử dụng IDENTITY thay vì AUTO_INCREMENT
+    invoice_id INT,
+    product_name VARCHAR(255),
+    quantity INT,
+    price Float,
+    total_price Float,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
+);

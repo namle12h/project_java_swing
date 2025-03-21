@@ -88,10 +88,10 @@ public class SaleProductView extends javax.swing.JFrame {
         // Kiểm tra xem có khách hàng nào được tìm thấy không
         if (customer != null) {
             // Nếu tìm thấy khách hàng, hiển thị thông tin khách hàng lên giao diện
-            txttenkh.setText("Tên: " + customer.getName());
-            txtemail.setText("Email: " + customer.getEmail());
-            txtsdt.setText("SĐT: " + customer.getPhone());
-            txtdiem.setText("Điểm: " + customer.getPoint());
+            txttenkh.setText("" + customer.getName());
+            txtemail.setText("" + customer.getEmail());
+            txtsdt.setText("" + customer.getPhone());
+            txtdiem.setText("" + customer.getPoint());
         } else {
             // Nếu không tìm thấy khách hàng, hiển thị thông báo không có trong hệ thống
             JOptionPane.showMessageDialog(null, "Khách hàng chưa tồn tại trong hệ thống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -198,46 +198,7 @@ public class SaleProductView extends javax.swing.JFrame {
         amount.setValue(0);
     }
 
-// tong tien
-    // public void updateTotalPrice() {
-    //     DefaultTableModel model = (DefaultTableModel) tblsanpham.getModel();
-    //     double total = 0;
-    //     double originalTotalPrice = 0;
-    //     double totalPriceWithDiscount = 0.0;
-    //     for (int i = 0; i < model.getRowCount(); i++) {
-    //         Object priceObj = model.getValueAt(i, 3);
-    //         Object quantityObj = model.getValueAt(i, 4);
 
-    //         // if (priceObj != null && quantityObj != null) {
-    //         //     double price = Double.parseDouble(priceObj.toString());
-    //         //     int quantity = Integer.parseInt(quantityObj.toString());
-    //         //     total += price * quantity;
-    //         // }
-
-
-
-
-    //         if (priceObj != null && quantityObj != null) {
-    //         double price = Double.parseDouble(priceObj.toString());
-    //         int quantity = Integer.parseInt(quantityObj.toString());
-    //         originalTotalPrice = price * quantity;
-    //         totalPriceWithDiscount = originalTotalPrice *  discountRate; // Áp dụng chiết khấu
-    //         //  total += totalPriceWithDiscount;
-            
-    //         }
-        
-        
-    //     }
-    //        total += (originalTotalPrice - totalPriceWithDiscount);
-
-        
-
-
-    //     lbtongtien.setText(String.format(" %.0f", originalTotalPrice));
-    //     lbchietkhau.setText(String.format(" %.0f", totalDiscount));
-    //     lbthanhtien.setText(String.format("%.0f",total));
-
-    // }
 
     public void updateTotalPrice() {
     DefaultTableModel model = (DefaultTableModel) tblsanpham.getModel();
@@ -273,6 +234,52 @@ public class SaleProductView extends javax.swing.JFrame {
     lbchietkhau.setText(String.format(" %.0f", totalDiscount)); // Tổng chiết khấu
     lbthanhtien.setText(String.format(" %.0f", total)); // Tổng tiền sau chiết khấu
 }
+
+
+public void showPaymentDialog() {
+    // Lấy thông tin khách hàng từ các JTextField hoặc JLabel trong SaleProductView
+    String customerName = txttenkh.getText();   // Tên khách hàng
+    String email = txtemail.getText();          // Email khách hàng
+    String phone = txtsdt.getText();            // Số điện thoại khách hàng
+    String point = txtdiem.getText();           // Điểm khách hàng (nếu cần)
+    String employeeName = lbnhanvien.getText();
+    // Giả sử bạn đã tính toán tổng tiền, chiết khấu và thành tiền
+    double totalAmount = Double.parseDouble(lbtongtien.getText().trim());  // Tổng tiền
+    double discountAmount = Double.parseDouble(lbchietkhau.getText().trim()); // Chiết khấu
+    double finalAmount = Double.parseDouble(lbthanhtien.getText().trim()); // Thành tiền
+
+    // Tạo cửa sổ thanh toán và hiển thị
+    Payments paymentDialog = new Payments(this, true);
+    paymentDialog.setCustomerDetails(customerName, email, phone);  // Truyền thông tin khách hàng
+    paymentDialog.setPaymentDetails(totalAmount, discountAmount, finalAmount);  // Truyền thông tin thanh toán
+    paymentDialog.setProductList(getCartItems());  // Truyền giỏ hàng
+    paymentDialog.SetEmployeeDetails(employeeName);
+    
+    
+    paymentDialog.setVisible(true); // Hiển thị cửa sổ thanh toán
+}
+
+private List<Product> getCartItems() {
+    List<Product> cartItems = new ArrayList<>();
+    DefaultTableModel model = (DefaultTableModel) tblsanpham.getModel();
+
+    // Lấy tất cả các sản phẩm trong giỏ hàng
+    for (int i = 0; i < model.getRowCount(); i++) {
+        
+        String productName = model.getValueAt(i, 1).toString();
+        int quantity = Integer.parseInt(model.getValueAt(i, 4).toString());
+        double price = Double.parseDouble(model.getValueAt(i, 3).toString());
+        double totalPrice =  price * quantity;
+
+        Product product = new Product(productName,quantity, price); // Tạo sản phẩm
+        cartItems.add(product); // Thêm vào giỏ hàng
+    }
+
+    return cartItems; // Trả về giỏ hàng
+}
+
+
+
 
 
     private void removeFromCart(int rowIndex) {
@@ -458,11 +465,20 @@ public class SaleProductView extends javax.swing.JFrame {
 
         btnthanhtoan.setBackground(new java.awt.Color(204, 204, 255));
         btnthanhtoan.setText("Thanh Toán");
+        // btnthanhtoan.addActionListener(new java.awt.event.ActionListener() {
+        //     public void actionPerformed(java.awt.event.ActionEvent evt) {
+        //         btnthanhtoanActionPerformed(evt);
+        //     }
+        // });
+        
         btnthanhtoan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnthanhtoanActionPerformed(evt);
-            }
-        });
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        // Xử lý khi nhấn nút thanh toán
+        showPaymentDialog();
+    }
+});
+
+
 
         jPanel4.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -570,10 +586,7 @@ public class SaleProductView extends javax.swing.JFrame {
 
         tblsanpham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+              
             },
             new String [] {
                 "Mã sản phẩm", "Tên sản phẩm", "Hình ảnh", "Giá tiền", "Số lượng", "Thành Tiền", "Chức Năng"

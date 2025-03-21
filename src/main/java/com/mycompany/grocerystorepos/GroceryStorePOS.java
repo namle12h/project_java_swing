@@ -4,15 +4,8 @@
 package com.mycompany.grocerystorepos;
 
 import com.mycompany.grocerystorepos.controller.Employee1Controller;
-import com.mycompany.grocerystorepos.controller.EmployeeController;
-import com.mycompany.grocerystorepos.controller.ProductController;
 import com.mycompany.grocerystorepos.dao.Employee1DAO;
-import com.mycompany.grocerystorepos.dao.EmployeeDAO;
-import com.mycompany.grocerystorepos.dao.ProductDAO;
 import com.mycompany.grocerystorepos.gui.Employee1View;
-import com.mycompany.grocerystorepos.gui.EmployeeView;
-import com.mycompany.grocerystorepos.gui.ProductSearchSuggestion;
-import com.mycompany.grocerystorepos.gui.ProductView;
 import javax.swing.SwingUtilities;
 
 /**

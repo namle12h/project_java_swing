@@ -24,6 +24,13 @@ public class Product {
 		this.minStock = minStock;
 	}
 
+    public Product(String productName, int quantity,double price) {
+        this.productName = productName;
+        this.price = price;
+        this.quantity = quantity;
+    }
+        
+
 	// Getters và Setters
 	public int getProductID() {
 		return productID;
@@ -88,5 +95,7 @@ public class Product {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-
+        public double getTotalPrice(){
+            return price* quantity;
+        }
 }
