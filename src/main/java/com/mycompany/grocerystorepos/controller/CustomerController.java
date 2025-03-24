@@ -32,6 +32,9 @@ public final class CustomerController {
         this.view = view;
         this.model = model;
 
+        view.getBtnAdd().addActionListener(e -> addCustomer());
+        view.getBtnUpdate().addActionListener(e -> updateCustomer());
+        view.getBtnDelete().addActionListener(e -> deleteCustomer());
         setUpTableSelectionListener();
         loadCustomers();
     }
@@ -58,6 +61,31 @@ public final class CustomerController {
         String phone = view.getCusPhone();
         String email = view.getCusEmail();
         String point = view.getCusPoint();
+        
+        Customer customer = view.getCustomerFromForm();
+        // Kiểm tra dữ liệu nhập vào
+        if (customer.getName().isEmpty() || customer.getPhone().isEmpty()
+                || customer.getEmail().isEmpty() || customer.getPoint().isEmpty()) {
+            view.showMessage("Vui lòng điền đầy đủ thông tin khách hàng!");
+            return;
+        }
+
+        if (!customer.getPhone().matches("\\d{10,11}")) {
+            view.showMessage("Số điện thoại phải có 10-11 chữ số!");
+            return;
+        }
+
+        if (!customer.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            view.showMessage("Email không hợp lệ!");
+            return;
+        }
+
+        try {
+            Integer.parseInt(customer.getPoint());
+        } catch (NumberFormatException e) {
+            view.showMessage("Điểm thưởng phải là số nguyên!");
+            return;
+        }
 
         // Tạo khách hàng mới (KHÔNG có ID)
         Customer newCustomer = new Customer(name, phone, email, point);
@@ -85,6 +113,31 @@ public final class CustomerController {
             String phone = view.getCusPhone();
             String email = view.getCusEmail();
             String point = view.getCusPoint();
+
+            Customer customer = view.getCustomerFromForm();
+            // Kiểm tra dữ liệu nhập vào
+            if (customer.getName().isEmpty() || customer.getPhone().isEmpty()
+                    || customer.getEmail().isEmpty() || customer.getPoint().isEmpty()) {
+                view.showMessage("Vui lòng điền đầy đủ thông tin khách hàng!");
+                return;
+            }
+
+            if (!customer.getPhone().matches("\\d{10,11}")) {
+                view.showMessage("Số điện thoại phải có 10-11 chữ số!");
+                return;
+            }
+
+            if (!customer.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                view.showMessage("Email không hợp lệ!");
+                return;
+            }
+
+            try {
+                Integer.parseInt(customer.getPoint());
+            } catch (NumberFormatException e) {
+                view.showMessage("Điểm thưởng phải là số nguyên!");
+                return;
+            }
 
             Customer updatedCustomer = new Customer(id, name, phone, email, point);
             if (model.updateCustomer(updatedCustomer)) {

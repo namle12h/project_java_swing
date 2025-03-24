@@ -4,79 +4,138 @@
  */
 package com.mycompany.grocerystorepos.gui;
 
-import javax.swing.JTextField;
+import javax.swing.*;
+import com.itextpdf.layout.Document;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
+import com.mycompany.grocerystorepos.controller.InventoryController;
+import com.mycompany.grocerystorepos.model.Inventory;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
+import java.io.FileNotFoundException;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author LENOVO
  */
-public class InventoryView extends javax.swing.JFrame {
+public final class InventoryView extends javax.swing.JFrame {
 
-    public javax.swing.JButton getBtnAdd() {
-        return btnadd;
-    }
+    private InventoryController controller;
 
-    public javax.swing.JButton getBtnUpdate() {
-        return btnupdate;
-    }
-
-    public javax.swing.JButton getBtnSave() {
-        return btnsave;
-    }
-
-    public javax.swing.JButton getBtnDelete() {
-        return btndelete;
-    }
-
-    public javax.swing.JTable getTable() {
-        return tbinventory;
-    }
-
-    public JTextField getQuantityInStock() {
-        return txtsoluong;
-    }
-
-    public JTextField getProductID() {
-        return txtmasp;
-    }
-
-    public JTextField getProductPrice() {
-        return txtgia;
-    }
-
-    public JTextField getProductUnit() {
-        return txthansd;
-    }
-
-    public JTextField getProductName() {
-        return txtnamesp;
-    }
-
-    public void setProductID(JTextField txtmasp) {
-        this.txtmasp = txtmasp;
-    }
-
-    public void setProductPrice(JTextField txtgia) {
-        this.txtgia = txtgia;
-    }
-
-    public void setProductUnit(JTextField txthansd) {
-        this.txthansd = txthansd;
-    }
-
-    public void setProductName(JTextField txtnamesp) {
-        this.txtnamesp = txtnamesp;
-    }
-
-    public void setQuantityInStock(JTextField txtsoluong) {
-        this.txtsoluong = txtsoluong;
-    }
-
-    /**
-     * Creates new form NewJFrame
-     */
     public InventoryView() {
         initComponents();
+        // Khởi tạo controller và load dữ liệu vào bảng khi mở form
+        controller = new InventoryController(this);
+        loadInventoryData();
+    }
+
+    public void loadInventoryData() {
+        List<Inventory> list = controller.getAllInventories();
+        // Sử dụng DefaultTableModel để cập nhật dữ liệu bảng
+        DefaultTableModel model = (DefaultTableModel) tbinventory.getModel();
+        model.setRowCount(0); // Xóa dữ liệu cũ
+        for (Inventory inv : list) {
+            Object[] row = new Object[]{
+                inv.getInventoryId(),
+                inv.getProductId(),
+                inv.getQuantity(),
+                inv.getLastUpdated()
+            };
+            model.addRow(row);
+        }
+    }
+
+    public void searchInventoryByProductId() {
+        String input = txttimproductid.getText().trim();
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập ProductID để tìm kiếm!");
+            return;
+        }
+        try {
+            int productId = Integer.parseInt(input);
+            // Sử dụng phương thức getInventoryByProductId trong DAO (có thể gọi trực tiếp nếu cần) hoặc thêm phương thức tương ứng trong controller
+            Inventory inv = controller.dao.getInventoryByProductId(productId);  // Lưu ý: Có thể tạo thêm 1 phương thức trong controller để ẩn chi tiết DAO
+            if (inv != null) {
+                // Tìm và highlight dòng có ProductID tương ứng trong JTable
+                DefaultTableModel model = (DefaultTableModel) tbinventory.getModel();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    if (productId == Integer.parseInt(model.getValueAt(i, 1).toString())) {
+                        tbinventory.setRowSelectionInterval(i, i);
+                        tbinventory.scrollRectToVisible(new Rectangle(tbinventory.getCellRect(i, 0, true)));
+                        return;
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy ProductID: " + productId);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Giá trị ProductID không hợp lệ!");
+        }
+    }
+
+    // Phương thức cập nhật tồn kho: khi nhập hàng (cộng dồn) hoặc xuất hàng (trừ)
+// quantityDelta > 0 cho nhập hàng, quantityDelta < 0 cho bán hàng
+    public void updateInventory(int productId, int quantityDelta) {
+        boolean result;
+        if (quantityDelta > 0) {
+            result = controller.addOrUpdateStockEntry(productId, quantityDelta);
+        } else {
+            result = controller.sellProduct(productId, -quantityDelta); // truyền giá trị dương cho phương thức sellProduct
+        }
+        if (result) {
+            JOptionPane.showMessageDialog(null, "Cập nhật tồn kho thành công!");
+            loadInventoryData();
+        } else {
+            JOptionPane.showMessageDialog(null, "Cập nhật tồn kho thất bại!");
+        }
+    }
+
+    public static void exportToPDF(JTable tbinventory, String filePath) {
+        try {
+            // Khởi tạo PdfWriter và PdfDocument
+            PdfWriter writer = new PdfWriter(filePath);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            // Thêm tiêu đề
+            document.add(new Paragraph("Inventory Data")
+                    .setFontSize(18)
+                    .setBold()
+                    .setTextAlignment(TextAlignment.CENTER));
+            document.add(new Paragraph(" "));
+
+            // Lấy dữ liệu từ JTable
+            TableModel tbinventoryModel = tbinventory.getModel();
+            int numColumns = tbinventoryModel.getColumnCount();
+            Table pdfTable = new Table(numColumns);
+
+            // Thêm header
+            for (int i = 0; i < numColumns; i++) {
+                pdfTable.addHeaderCell(new Paragraph(tbinventoryModel.getColumnName(i)).setBold());
+            }
+
+            // Thêm dữ liệu từ JTable
+            for (int row = 0; row < tbinventoryModel.getRowCount(); row++) {
+                for (int col = 0; col < numColumns; col++) {
+                    Object cellValue = tbinventoryModel.getValueAt(row, col);
+                    pdfTable.addCell(new Paragraph(cellValue != null ? cellValue.toString() : ""));
+                }
+            }
+
+            document.add(pdfTable);
+            pdfDoc.close();
+
+            JOptionPane.showMessageDialog(null, "Xuất file PDF thành công: " + filePath);
+        } catch (HeadlessException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Lỗi khi xuất file PDF: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,45 +147,21 @@ public class InventoryView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnsave = new javax.swing.JButton();
-        btndelete = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        btnupdate = new javax.swing.JButton();
-        btnadd = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbinventory = new javax.swing.JTable();
+        btnExportPDF = new javax.swing.JButton();
+        txttimproductid = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtgia = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtmasp = new javax.swing.JTextField();
-        txtnamesp = new javax.swing.JTextField();
-        txthansd = new javax.swing.JTextField();
-        txtsoluong = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        btnok = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        btnsave.setText("RESET");
-        btnsave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnsaveActionPerformed(evt);
-            }
-        });
-
-        btndelete.setText("DELETE");
-        btndelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btndeleteActionPerformed(evt);
-            }
-        });
 
         jPanel1.setBackground(new java.awt.Color(51, 0, 255));
 
         jLabel1.setBackground(new java.awt.Color(153, 153, 153));
-        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Quản Lí Kho Hàng");
 
@@ -135,130 +170,76 @@ public class InventoryView extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(263, Short.MAX_VALUE)
+                .addContainerGap(229, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(263, Short.MAX_VALUE))
+                .addContainerGap(229, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addContainerGap(23, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
-
-        btnupdate.setText("UPDATE");
-        btnupdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnupdateActionPerformed(evt);
-            }
-        });
-
-        btnadd.setText("ADD");
-        btnadd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnaddActionPerformed(evt);
-            }
-        });
 
         tbinventory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Id", "name", "price", "quantity", "unit"
+                "InventoryID", "ProductID", "Quantity", "LastUpdated"
             }
         ));
         jScrollPane1.setViewportView(tbinventory);
 
-        jLabel2.setText("Mã Sản Phẩm");
-
-        jLabel7.setText("Giá");
-
-        jLabel3.setText("Tên Sản Phẩm");
-
-        txtgia.setActionCommand("<Not Set>");
-        txtgia.addActionListener(new java.awt.event.ActionListener() {
+        btnExportPDF.setBackground(new java.awt.Color(204, 0, 51));
+        btnExportPDF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnExportPDF.setForeground(new java.awt.Color(255, 255, 255));
+        btnExportPDF.setText("EXPORT FILE");
+        btnExportPDF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtgiaActionPerformed(evt);
+                btnExportPDFActionPerformed(evt);
             }
         });
 
-        jLabel4.setText("Hạn Sử Dụng");
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Tìm productId:");
 
-        txtmasp.setActionCommand("<Not Set>");
-        txtmasp.addActionListener(new java.awt.event.ActionListener() {
+        btnok.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnok.setText("FIND");
+        btnok.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtmaspActionPerformed(evt);
+                btnokActionPerformed(evt);
             }
         });
-
-        txtnamesp.setActionCommand("<Not Set>");
-        txtnamesp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtnamespActionPerformed(evt);
-            }
-        });
-
-        txthansd.setActionCommand("<Not Set>");
-        txthansd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txthansdActionPerformed(evt);
-            }
-        });
-
-        txtsoluong.setActionCommand("<Not Set>");
-        txtsoluong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtsoluongActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setText("Số Lượng");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtnamesp, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                            .addComponent(txtmasp, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                            .addComponent(txtgia, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                            .addComponent(txthansd, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                            .addComponent(txtsoluong, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnadd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnsave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btndelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(1, 1, 1))
-                            .addComponent(btnupdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(24, 24, 24))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txttimproductid, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnok)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnExportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -267,90 +248,48 @@ public class InventoryView extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(102, 102, 102)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(115, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtmasp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtnamesp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(txtgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnadd, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnupdate, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnsave, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btndelete, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txthansd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txttimproductid, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnok, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(465, Short.MAX_VALUE)))
+                    .addContainerGap(336, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveActionPerformed
+    private void btnExportPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportPDFActionPerformed
         // TODO add your handling code here:
-        txtgia.setText("");
-        txthansd.setText("");
-        txtmasp.setText("");
-        txtnamesp.setText("");
-        txtsoluong.setText("");
-    }//GEN-LAST:event_btnsaveActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file PDF");
 
-    private void btndeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btndeleteActionPerformed
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
 
-    private void btnaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnaddActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnaddActionPerformed
+            // Kiểm tra nếu người dùng chưa nhập phần mở rộng .pdf, tự động thêm
+            if (!filePath.toLowerCase().endsWith(".pdf")) {
+                filePath += ".pdf";
+            }
 
-    private void btnupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnupdateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnupdateActionPerformed
+            // Gọi phương thức exportToPDF với bảng và đường dẫn file
+            exportToPDF(tbinventory, filePath);
+        }
+    }//GEN-LAST:event_btnExportPDFActionPerformed
 
-    private void txtgiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtgiaActionPerformed
+    private void btnokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnokActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtgiaActionPerformed
-
-    private void txtmaspActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtmaspActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtmaspActionPerformed
-
-    private void txtnamespActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnamespActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtnamespActionPerformed
-
-    private void txthansdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txthansdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txthansdActionPerformed
-
-    private void txtsoluongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtsoluongActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtsoluongActionPerformed
+        searchInventoryByProductId();
+    }//GEN-LAST:event_btnokActionPerformed
 
     /**
      * @param args the command line arguments
@@ -381,32 +320,20 @@ public class InventoryView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new InventoryView().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new InventoryView().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnadd;
-    private javax.swing.JButton btndelete;
-    private javax.swing.JButton btnsave;
-    private javax.swing.JButton btnupdate;
+    private javax.swing.JButton btnExportPDF;
+    private javax.swing.JButton btnok;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbinventory;
-    private javax.swing.JTextField txtgia;
-    private javax.swing.JTextField txthansd;
-    private javax.swing.JTextField txtmasp;
-    private javax.swing.JTextField txtnamesp;
-    private javax.swing.JTextField txtsoluong;
+    private javax.swing.JTextField txttimproductid;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -24,9 +24,7 @@ public class CustomerDAO {
         List<Customer> customers = new ArrayList<>();
         String query = "SELECT CustomerID, FullName, Phone, Email, Points FROM Customer";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
                 customers.add(new Customer(
@@ -42,13 +40,36 @@ public class CustomerDAO {
         }
         return customers;
     }
+// ✅ Lấy khách hàng theo ID
+
+    public Customer getCustomerById(int customerId) {
+        String query = "SELECT CustomerID, FullName, Phone, Email, Points FROM Customer WHERE CustomerID = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, customerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new Customer(
+                        rs.getInt("CustomerID"),
+                        rs.getString("FullName"),
+                        rs.getString("Phone"),
+                        rs.getString("Email"),
+                        rs.getString("Points")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy khách hàng
+    }
 
     // ✅ Thêm khách hàng mới
     public boolean addCustomer(Customer customer) {
         String query = "INSERT INTO Customer (FullName, Phone, Email, Points) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, customer.getName());
             pstmt.setString(2, customer.getPhone());
@@ -73,8 +94,7 @@ public class CustomerDAO {
     public boolean updateCustomer(Customer customer) {
         String query = "UPDATE Customer SET FullName = ?, Phone = ?, Email = ?, Points = ? WHERE CustomerID = ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, customer.getName());
             pstmt.setString(2, customer.getPhone());
@@ -93,8 +113,7 @@ public class CustomerDAO {
     public boolean deleteCustomer(int customerId) {
         String query = "DELETE FROM Customer WHERE CustomerID = ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setInt(1, customerId);
             return pstmt.executeUpdate() > 0;

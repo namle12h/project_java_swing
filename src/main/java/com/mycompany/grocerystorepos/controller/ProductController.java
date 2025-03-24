@@ -134,22 +134,19 @@ public class ProductController {
     }
 
     private void setUpTableSelectionListener() {
-        view.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int selectedRow = view.getTable().getSelectedRow();
-                if (selectedRow != -1) {
-                    view.setProductID(String.valueOf(view.getTableModel().getValueAt(selectedRow, 0)));
-                    view.setProductName((String) view.getTableModel().getValueAt(selectedRow, 1));
-                    view.setPrice(String.valueOf(view.getTableModel().getValueAt(selectedRow, 2)));
-                    view.setQuantity(String.valueOf(view.getTableModel().getValueAt(selectedRow, 3)));
-                    view.setUnit((String) view.getTableModel().getValueAt(selectedRow, 4));
-                    view.setSupplier((String) view.getTableModel().getValueAt(selectedRow, 5));
-                    view.setCategory((String) view.getTableModel().getValueAt(selectedRow, 6));
-                     view.setMinStock((String) view.getTableModel().getValueAt(selectedRow, 7));
-
-                    
-                }
+        view.getTable().getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            int selectedRow = view.getTable().getSelectedRow();
+            if (selectedRow != -1) {
+                view.setProductID(String.valueOf(view.getTableModel().getValueAt(selectedRow, 0)));
+                view.setProductName((String) view.getTableModel().getValueAt(selectedRow, 1));
+                view.setPrice(String.valueOf(view.getTableModel().getValueAt(selectedRow, 2)));
+                view.setQuantity(String.valueOf(view.getTableModel().getValueAt(selectedRow, 3)));
+                view.setUnit((String) view.getTableModel().getValueAt(selectedRow, 4));
+                view.setSupplier((String) view.getTableModel().getValueAt(selectedRow, 5));
+                view.setCategory((String) view.getTableModel().getValueAt(selectedRow, 6));
+                view.setMinStock((String) view.getTableModel().getValueAt(selectedRow, 7));
+                
+                
             }
         });
     }

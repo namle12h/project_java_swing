@@ -3,13 +3,14 @@ D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\con
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\Employee1Controller.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\EmployeeController.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\InventoryController.java
-D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\InventoryManager.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\ProductController.java
+D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\controller\StockEntryController.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\CustomerDAO.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\Employee1DAO.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\EmployeeDAO.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\InventoryDAO.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\ProductDAO.java
+D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\dao\StockEntryDAO.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\GroceryStorePOS.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\CustomerView.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Employee1View.java
@@ -22,8 +23,10 @@ D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\ProductView.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SaleProductView.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\sgpr.java
+D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\StockEntryView.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Customer.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Employee.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Employee1.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Inventory.java
 D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Product.java
+D:\New Folder\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\StockEntry.java

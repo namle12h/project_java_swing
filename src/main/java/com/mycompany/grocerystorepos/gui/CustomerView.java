@@ -8,11 +8,9 @@ import com.mycompany.grocerystorepos.controller.CustomerController;
 import com.mycompany.grocerystorepos.dao.CustomerDAO;
 import com.mycompany.grocerystorepos.model.Customer;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -82,9 +80,8 @@ public class CustomerView extends javax.swing.JFrame {
     public void setCusPoint(String point) {
         txtdiemthuong.setText(point);
     }
-    private List<Customer> list = new ArrayList<>();
     private DefaultTableModel tblModel;
-    private final CustomerController controller; // Controller quản lý dữ liệu
+    private final CustomerController controller;
 
     /**
      * Creates new form CustomerView
@@ -92,36 +89,54 @@ public class CustomerView extends javax.swing.JFrame {
     public CustomerView() {
         initComponents();
         setLocationRelativeTo(null);
-        CustomerDAO model = new CustomerDAO(); // Model xử lý dữ liệu
-        controller = new CustomerController(this, model); // Controller quản lý view
-        initTable();
-//        initData();
+        CustomerDAO model = new CustomerDAO();
+        controller = new CustomerController(this, model);
+        controller.loadCustomers(); // ✅ Load dữ liệu khi mở UI
     }
 
-    private void fillTable() {
-        for (Customer cus : list) {
-            tblModel.addRow(new Object[]{
-                cus.getId(),
-                cus.getName(),
-                cus.getPhone(),
-                cus.getEmail(),
-                cus.getPoint()
-            });
+    public void setTableData(List<Customer> customers) {
+        tblModel.setRowCount(0);
+        for (Customer c : customers) {
+            tblModel.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getPoint()});
         }
-        tblModel.fireTableDataChanged();
     }
 
-//    private void initData() {
-//        list.add(new Customer("15", "asdasd", "124", "42134", "123"));
-//        list.add(new Customer("16", "asdasd", "124", "42134", "123"));
-//        list.add(new Customer("13", "asdasd", "124", "42134", "123"));
-//        list.add(new Customer("12", "asdasd", "124", "42134", "123"));
-//    }
     private void initTable() {
         tblModel = new DefaultTableModel();
-        String[] columns = new String[]{"Id", "Name", "Phone", "Email", "Points"};
+        String[] columns = {"Id", "Name", "Phone", "Email", "Points"};
         tblModel.setColumnIdentifiers(columns);
         tbcustomer.setModel(tblModel);
+    }
+
+    public Customer getCustomerFromForm() {
+        return new Customer(
+                txtnamekhachhang.getText().trim(),
+                txtsodt.getText().trim(),
+                txtemail.getText().trim(),
+                txtdiemthuong.getText().trim()
+        );
+    }
+
+    public void setCustomerForm(Customer customer) {
+        txtnamekhachhang.setText(customer.getName());
+        txtsodt.setText(customer.getPhone());
+        txtemail.setText(customer.getEmail());
+        txtdiemthuong.setText(customer.getPoint());
+    }
+
+    public void clearForm() {
+        txtnamekhachhang.setText("");
+        txtsodt.setText("");
+        txtemail.setText("");
+        txtdiemthuong.setText("");
+    }
+
+    public int getSelectedCustomerRow() {
+        return tbcustomer.getSelectedRow();
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
     }
 
     /**
@@ -347,69 +362,6 @@ public class CustomerView extends javax.swing.JFrame {
 
     private void btnaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnaddActionPerformed
         // TODO add your handling code here:
-
-        StringBuilder sb = new StringBuilder();
-// Kiểm tra các trường không được để trống
-        if (txtnamekhachhang.getText().trim().isEmpty()) {
-            sb.append("Tên khách hàng không được để trống\n");
-        }
-        if (txtsodt.getText().trim().isEmpty()) {
-            sb.append("Số điện thoại không được để trống\n");
-        }
-        if (txtemail.getText().trim().isEmpty()) {
-            sb.append("Email không được để trống\n");
-        }
-        if (txtdiemthuong.getText().trim().isEmpty()) {
-            sb.append("Điểm thưởng không được để trống\n");
-        }
-
-// Nếu có lỗi, hiển thị thông báo và dừng lại
-        if (sb.length() > 0) {
-            JOptionPane.showMessageDialog(null, sb.toString(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-// Kiểm tra định dạng số điện thoại
-        if (!txtsodt.getText().matches("\\d{10,11}")) {
-            JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10-11 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-// Kiểm tra định dạng email
-        if (!txtemail.getText().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            JOptionPane.showMessageDialog(null, "Email không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-// Kiểm tra điểm thưởng có phải là số không
-        try {
-            Integer.valueOf(txtdiemthuong.getText().trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Điểm thưởng phải là số nguyên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-// Tạo đối tượng khách hàng
-        Customer customer = new Customer(
-                txtnamekhachhang.getText().trim(),
-                txtsodt.getText().trim(),
-                txtemail.getText().trim(),
-                txtdiemthuong.getText().trim()
-        );
-        if (list == null) {
-            list = new ArrayList<>();
-        }
-// Kiểm tra trùng mã khách hàng
-        for (Customer c : list) {
-            if (c.getId().equals(customer.getId())) {
-                JOptionPane.showMessageDialog(null, "Mã khách hàng đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            } else {
-            }
-        }
-        list.add(customer);
-        controller.loadCustomers();
-        fillTable();
-        controller.addCustomer();
     }//GEN-LAST:event_btnaddActionPerformed
 
     private void btnsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveActionPerformed
@@ -421,37 +373,14 @@ public class CustomerView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnsaveActionPerformed
 
     private void btndeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = tbcustomer.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa khách hàng này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            int customerId = Integer.parseInt(tbcustomer.getValueAt(selectedRow, 0).toString()); // ✅ Chỉ khai báo 1 lần với kiểu int
-            CustomerDAO customerDAO = new CustomerDAO();
-            boolean success = customerDAO.deleteCustomer(customerId);
-
-            if (success) {
-                JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                SwingUtilities.invokeLater(() -> controller.loadCustomers()); // Load lại bảng sau khi xóa
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }//GEN-LAST:event_btndeleteActionPerformed
-
+    // TODO add your handling code here:
     private void txtemailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtemailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtemailActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-//        fillTable();
-        controller.loadCustomers();
-        /////////////////////////////////////////////////////////////////////////
         JTextField[] fields = {txtemail, txtnamekhachhang, txtsodt, txtdiemthuong};
         String[] placeholders = {"Nhập email...", "Nhập mã khách hàng...", "Nhập họ tên...", "Nhập số điện thoại...", "Nhập điểm thưởng..."};
 

@@ -1,54 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.grocerystorepos.model;
 
-/**
- *
- * @author LENOVO
- */
+import java.util.Date;
 
 public class Inventory {
-    private String productCode;
-    private String productName;
-    private double price;
+
+    private int inventoryId;
+    private int productId;
     private int quantity;
-    private String unit;
+    private Date lastUpdated;
 
-    public Inventory(String productCode, String productName, double price, int quantity, String unit) {
-        this.productCode = productCode;
-        this.productName = productName;
-        this.price = price;
+    // Constructor không đối số
+    public Inventory() {
+    }
+
+    // Constructor cho insert mới (InventoryID tự động, LastUpdated tự động)
+    public Inventory(int productId, int quantity) {
+        this.productId = productId;
         this.quantity = quantity;
-        this.unit = unit;
     }
 
-    // Getters and setters
-    public String getProductCode() {
-        return productCode;
+    // Constructor đầy đủ
+    public Inventory(int inventoryId, int productId, int quantity, Date lastUpdated) {
+        this.inventoryId = inventoryId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.lastUpdated = lastUpdated;
     }
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
+    // Getters and Setters
+    public int getInventoryId() {
+        return inventoryId;
     }
 
-    public String getProductName() {
-        return productName;
+    public void setInventoryId(int inventoryId) {
+        this.inventoryId = inventoryId;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public int getProductId() {
+        return productId;
     }
 
-    public double getPrice() {
-        return price;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-  
     public int getQuantity() {
         return quantity;
     }
@@ -56,17 +51,12 @@ public class Inventory {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-  
-    public String getUnit() {
-        return unit;
+
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
-  
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-    
-    @Override
-    public String toString() {
-        return productCode + " - " + productName + " (" + quantity + " " + unit + ")";
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

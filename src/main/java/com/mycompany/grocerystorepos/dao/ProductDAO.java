@@ -8,7 +8,7 @@ import java.util.List;
 public class ProductDAO {
     private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123";
+    private static final String PASSWORD = "12345";
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
