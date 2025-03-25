@@ -4,8 +4,13 @@
 package com.mycompany.grocerystorepos;
 
 import com.mycompany.grocerystorepos.controller.Employee1Controller;
+import com.mycompany.grocerystorepos.controller.ProductController;
 import com.mycompany.grocerystorepos.dao.Employee1DAO;
+import com.mycompany.grocerystorepos.dao.ProductDAO;
 import com.mycompany.grocerystorepos.gui.Employee1View;
+import com.mycompany.grocerystorepos.gui.ProductView;
+import com.mycompany.grocerystorepos.gui.ProductViewPanel;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -14,16 +19,26 @@ import javax.swing.SwingUtilities;
  */
 public class GroceryStorePOS {
 
-    public static void main(String[] args) {
+     public static void main(String[] args) {
+        // Sử dụng SwingUtilities để chạy trên Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {
-//            ProductView view = new ProductView();
-//            ProductDAO dao = new ProductDAO(); // Tạo một đối tượng ProductDAO
-//            new ProductController(view, dao); // Truyền cả hai tham số vào
-               Employee1View view = new Employee1View();
-               Employee1DAO dao = new Employee1DAO();
-               new Employee1Controller(view, dao);
-//            ProductSearchSuggestion view = new ProductSearchSuggestion();
-            view.setVisible(true);
+            // Tạo ProductViewPanel và ProductDAO
+            ProductViewPanel view = new ProductViewPanel();
+            ProductDAO dao = new ProductDAO();  // Tạo một đối tượng ProductDAO
+
+            // Tạo ProductController và truyền vào view và dao
+            ProductController controller = new ProductController(view, dao);
+
+            // Tạo JFrame để hiển thị giao diện
+            JFrame frame = new JFrame("Product Management");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+
+            // Thêm ProductViewPanel vào JFrame (có thể là ProductController nếu bạn cần logic)
+            frame.add(view);  // Hoặc frame.add(controller) nếu bạn muốn thêm controller vào frame
+
+            // Hiển thị JFrame
+            frame.setVisible(true);
         });
     }
 }
