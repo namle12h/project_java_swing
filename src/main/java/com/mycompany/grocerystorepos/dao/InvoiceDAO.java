@@ -11,49 +11,7 @@ import java.util.List;
 
 public class InvoiceDAO {
 
-//    // Lưu hóa đơn và chi tiết hóa đơn vào database
-//    public void saveInvoice(int customerId, double totalAmount, double discountAmount, double finalAmount, List<Product> cartItems) {
-//        Connection conn = null;
-//        try {
-//            // Lấy kết nối từ DBConnection
-//            conn = DBConnection.getConnection();
-//            
-//            // 1. Lưu thông tin hóa đơn vào bảng invoices
-//            String insertInvoiceSQL = "INSERT INTO invoices (customer_id, total_amount, discount_amount, final_amount) VALUES (?, ?, ?, ?)";
-//            try (PreparedStatement stmt = conn.prepareStatement(insertInvoiceSQL, Statement.RETURN_GENERATED_KEYS)) {
-//                stmt.setInt(1, customerId);
-//                stmt.setDouble(2, totalAmount);
-//                stmt.setDouble(3, discountAmount);
-//                stmt.setDouble(4, finalAmount);
-//                stmt.executeUpdate();
-//
-//                // Lấy mã hóa đơn vừa tạo
-//                ResultSet rs = stmt.getGeneratedKeys();
-//                if (rs.next()) {
-//                    int invoiceId = rs.getInt(1);  // Lấy invoiceId từ kết quả vừa chèn
-//
-//                    // 2. Lưu thông tin chi tiết sản phẩm vào bảng invoice_details
-//                    String insertDetailSQL = "INSERT INTO invoice_details (invoice_id, product_name, quantity, price, total_price) VALUES (?, ?, ?, ?, ?)";
-//                    try (PreparedStatement detailStmt = conn.prepareStatement(insertDetailSQL)) {
-//                        for (Product product : cartItems) {
-//                            detailStmt.setInt(1, invoiceId); // Gán invoice_id cho các chi tiết sản phẩm
-//                            detailStmt.setString(2, product.getProductName());
-//                            detailStmt.setInt(3, product.getQuantity());
-//                            detailStmt.setDouble(4, product.getPrice());
-//                            detailStmt.setDouble(5, product.getTotalPrice());
-//                            detailStmt.addBatch();  // Thêm vào batch để chèn nhiều bản ghi
-//                        }
-//                        detailStmt.executeBatch();  // Thực hiện batch insert
-//                    }
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            // Đóng kết nối sau khi sử dụng
-////            DBConnection.closeConnection(conn);
-//        }
-//    }
+
 
 
 
@@ -90,7 +48,7 @@ public int getEmployeeIdByName(String employeeName) {
 
         
          // Phương thức để lưu hóa đơn vào cơ sở dữ liệu
-    public boolean saveInvoice(int customerId, double totalAmount, double discountAmount, double finalAmount, List<Product> cartItems,int employeeID) {
+    public boolean saveInvoice(int customerId, double totalAmount, double discountAmount, double finalAmount, List<Product> cartItems,int employeeID, String paymentMethod) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         int invoiceId = -1;
@@ -101,13 +59,14 @@ public int getEmployeeIdByName(String employeeName) {
             
          
             // 1. Lưu thông tin hóa đơn vào bảng invoices
-            String sqlInvoice = "INSERT INTO invoices (customer_id, total_amount, discount_amount, final_amount, invoice_date, EmployeeID) VALUES (?, ?, ?, ?, GETDATE(),?)";
+            String sqlInvoice = "INSERT INTO invoices (customer_id, total_amount, discount_amount, final_amount, invoice_date, EmployeeID,payment_method) VALUES (?, ?, ?, ?, GETDATE(),?,?)";
             pstmt = conn.prepareStatement(sqlInvoice, PreparedStatement.RETURN_GENERATED_KEYS);
             pstmt.setInt(1, customerId);
             pstmt.setDouble(2, totalAmount);
             pstmt.setDouble(3, discountAmount);
             pstmt.setDouble(4, finalAmount);
             pstmt.setDouble(5, employeeID);
+            pstmt.setString(6, paymentMethod);  // Thêm phương thức thanh toán
             pstmt.executeUpdate();
 
             // Lấy invoice_id vừa tạo

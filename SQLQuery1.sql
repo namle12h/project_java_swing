@@ -299,7 +299,7 @@ JOIN
 JOIN 
     customer c ON i.customer_id = c.CustomerID  -- Kết nối với bảng customer
 JOIN 
-    Employee1 e ON i.employee_id = e.EmployeeID  -- Kết nối với bảng Employee1 để lấy thông tin nhân viên
+    Employee1 e ON i.EmployeeID = e.EmployeeID  -- Kết nối với bảng Employee1 để lấy thông tin nhân viên
 ORDER BY 
     c.CustomerName, id.product_name;  -- Sắp xếp theo tên khách hàng và tên sản phẩm
 

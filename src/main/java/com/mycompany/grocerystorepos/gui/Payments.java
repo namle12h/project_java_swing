@@ -57,6 +57,15 @@ public class Payments extends javax.swing.JDialog {
         return tbhoadon;
     }
     
+    // Getter cho các radio button
+    public boolean isCashSelected() {
+        return rdtienmat.isSelected();  // Kiểm tra xem "Tiền mặt" có được chọn không
+    }
+
+    public boolean isQrSelected() {
+        return rdqr.isSelected();  // Kiểm tra xem "QR" có được chọn không
+    }
+
     
 
     // Các phương thức setValue để thiết lập giá trị
@@ -72,6 +81,7 @@ public class Payments extends javax.swing.JDialog {
         lbthanhtien.setText(String.valueOf(finalAmount));
     }
     
+   
  
 
       // Phương thức để thiết lập thông tin khách hàng
@@ -161,10 +171,7 @@ public class Payments extends javax.swing.JDialog {
 
         tbhoadon.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+             
             },
             new String [] {
                 "Ma San Pham", "Ten San Pham", "Gia", "So Luong", "Thanh Tien"

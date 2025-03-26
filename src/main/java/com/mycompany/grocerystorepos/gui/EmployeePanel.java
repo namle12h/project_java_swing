@@ -109,10 +109,12 @@ public class EmployeePanel extends javax.swing.JPanel {
         ));
         jScrollPane2.setViewportView(tbEmployee);
 
-        btnAdd.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\addicon.png"));
+        btnAdd.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\plus.png"));
         btnAdd.setText("ADD");
 
         btnUpdate.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\update.png"));
+        btnDelete.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\trash.png"));
+        btnSave.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\refresh.png"));
         btnUpdate.setText("Update");
 
         btnDelete.setText("Delete");
