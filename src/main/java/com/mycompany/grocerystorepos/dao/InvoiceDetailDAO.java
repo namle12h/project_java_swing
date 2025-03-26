@@ -63,5 +63,5 @@ public class InvoiceDetailDAO {
         return details;
     }
 
-    // Các phương thức khác tùy theo yêu cầu (cập nhật, xóa, tìm kiếm)
+ 
 }

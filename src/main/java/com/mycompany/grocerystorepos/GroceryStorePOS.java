@@ -3,15 +3,14 @@
  */
 package com.mycompany.grocerystorepos;
 
-import com.mycompany.grocerystorepos.controller.Employee1Controller;
 import com.mycompany.grocerystorepos.controller.EmployeeController;
 import com.mycompany.grocerystorepos.controller.ProductController;
 import com.mycompany.grocerystorepos.dao.Employee1DAO;
 import com.mycompany.grocerystorepos.dao.EmployeeDAO;
 import com.mycompany.grocerystorepos.dao.ProductDAO;
-import com.mycompany.grocerystorepos.gui.Employee1View;
+
 import com.mycompany.grocerystorepos.gui.EmployeePanel;
-import com.mycompany.grocerystorepos.gui.EmployeeView;
+
 import com.mycompany.grocerystorepos.gui.Login;
 import com.mycompany.grocerystorepos.gui.ProductView;
 import com.mycompany.grocerystorepos.gui.ProductViewPanel;
@@ -24,7 +23,7 @@ import javax.swing.SwingUtilities;
  */
 public class GroceryStorePOS {
 
-     public static void main(String[] args) {
+    public static void main(String[] args) {
         // Sử dụng SwingUtilities để chạy trên Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {
             // Tạo ProductViewPanel và ProductDAO

@@ -16,9 +16,7 @@ D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Addne
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\ButtonEditor.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\ButtonRenderer.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\CustomerView.java
-D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Employee1View.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\EmployeePanel.java
-D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\EmployeeView.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\forgetPasswordAdmin.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Login.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\Main.java
@@ -29,6 +27,7 @@ D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SaleP
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SaleProductView.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SalesPage.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\gui\SuggestFile.java
+D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\CurrentUser.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Customer.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Employee.java
 D:\doan\project_java_swing\src\main\java\com\mycompany\grocerystorepos\model\Employee1.java

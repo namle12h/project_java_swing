@@ -232,8 +232,6 @@ INSERT INTO Customer (CustomerID, CustomerName, phone, email, point) VALUES
 ('C002', 'Trần Thị B', '0912345678', 'tranthib@gmail.com', '200'),
 ('C003', 'Lê Văn C', '0923456789', 'levanc@gmail.com', '50');
 
-SELECT * FROM Customer
-
 SELECT COLUMN_NAME
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'customer';
@@ -248,6 +246,10 @@ CREATE TABLE invoices (
     invoice_date DATETIME DEFAULT GETDATE()  -- Thay CURRENT_TIMESTAMP bằng GETDATE() trong MSSQL
 );
 
+SELECT * FROM invoice_details
+
+SELECT * FROM invoices
+
 CREATE TABLE invoice_details (
     detail_id INT IDENTITY(1,1) PRIMARY KEY,  -- Sử dụng IDENTITY thay vì AUTO_INCREMENT
     invoice_id INT,
@@ -257,3 +259,77 @@ CREATE TABLE invoice_details (
     total_price Float,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
 );
+
+ALTER TABLE invoices
+ADD EmployeeID INT;  -- Thêm cột employee_id để lưu trữ ID của nhân viên bán hàng
+ALTER TABLE invoices
+ADD CONSTRAINT FK_Employee FOREIGN KEY (EmployeeID) REFERENCES Employee1(EmployeeID);
+
+INSERT INTO invoices (customer_id, total_amount, discount_amount, final_amount, invoice_date, EmployeeID)
+VALUES (1, 500000, 100000, 400000, GETDATE(), 1);
+
+
+SELECT 
+    c.CustomerName AS customer_name,
+    id.product_name,
+    id.quantity,
+    id.price,
+    id.total_price
+FROM 
+    invoice_details id
+JOIN 
+    invoices i ON id.invoice_id = i.invoice_id  -- Kết nối với bảng invoices
+JOIN 
+    customer c ON i.customer_id = c.CustomerID  -- Kết nối với bảng customer
+ORDER BY 
+    c.CustomerName, id.product_name;  -- Sắp xếp theo tên khách hàng và tên sản phẩm
+
+
+SELECT 
+    c.CustomerName AS customer_name,  -- Tên khách hàng
+    id.product_name,                   -- Tên sản phẩm
+    id.quantity,                       -- Số lượng sản phẩm
+    id.price,                          -- Giá sản phẩm
+    id.total_price,                    -- Tổng tiền cho sản phẩm
+    e.Name AS employee_name            -- Tên nhân viên bán hàng
+FROM 
+    invoice_details id
+JOIN 
+    invoices i ON id.invoice_id = i.invoice_id  -- Kết nối với bảng invoices
+JOIN 
+    customer c ON i.customer_id = c.CustomerID  -- Kết nối với bảng customer
+JOIN 
+    Employee1 e ON i.employee_id = e.EmployeeID  -- Kết nối với bảng Employee1 để lấy thông tin nhân viên
+ORDER BY 
+    c.CustomerName, id.product_name;  -- Sắp xếp theo tên khách hàng và tên sản phẩm
+
+
+
+
+	
+	CREATE TABLE Customer (
+    CustomerID INT IDENTITY(1,1) PRIMARY KEY,  -- Sử dụng IDENTITY để cột tự động tăng
+    CustomerName NVARCHAR(100) NOT NULL,
+    phone NVARCHAR(20) NOT NULL,
+    email NVARCHAR(100),
+    point NVARCHAR(10) NOT NULL
+);
+
+INSERT INTO Customer (CustomerName, phone, email, point)
+VALUES ('Nguyễn Văn A', '0123456789', 'nguyenvana@example.com', '100');
+
+INSERT INTO Customer (CustomerName, phone, email, point)
+VALUES ('Lê Thị B', '0987654321', 'lethib@example.com', '200');
+
+
+SELECT * FROM Employee1
+select * from invoices
+
+
+
+
+SELECT EmployeeID, Name FROM Employee1;
+
+
+
+

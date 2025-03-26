@@ -19,18 +19,17 @@ public class Main extends javax.swing.JFrame {
     public CardLayout card = new CardLayout();
     private static String role;
     private SaleProductPanel saleProductPanel;
-    private static String employeeName;  // Biến lưu tên nhân viên
+   
 
-    public Main(String role, String employeeName) {
+
+    public Main(String role) {
         initComponents();
         this.role = role;
         pnMain.setLayout(card);
 
         // Cập nhật quyền truy cập cho các button
         updateButtonsBasedOnRole(role);
-        // Khởi tạo SaleProductPanel và truyền tên nhân viên vào
-        saleProductPanel = new SaleProductPanel(employeeName);
-        pnMain.add(saleProductPanel, "SaleProductPanel");
+     
     }
 
     // Phương thức phân quyền: ẩn hoặc kích hoạt các button tùy thuộc vào vai trò người dùng
@@ -70,9 +69,13 @@ public class Main extends javax.swing.JFrame {
         return "employee";  // Hoặc "admin" tùy theo vai trò người dùng
     }
 
-    public static String getEmployeeName() {
-        return employeeName;  // Trả về tên nhân viên đã lưu
-    }
+//    public static String getEmployeeName() {
+//        return  ;  // Trả về tên nhân viên đã lưu
+//    }
+
+    public void setEmployeeName(String name) {
+    lbtennhanvien.setText("" + name);  // Cập nhật label với tên nhân viên
+}
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -87,6 +90,8 @@ public class Main extends javax.swing.JFrame {
         btnthoat = new javax.swing.JButton();
         btnhome = new javax.swing.JButton();
         btnsanpham = new javax.swing.JButton();
+        lbtennhanvien = new javax.swing.JLabel();
+        lbacount = new javax.swing.JLabel();
         pnMain = new javax.swing.JPanel();
         logo = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -119,15 +124,6 @@ public class Main extends javax.swing.JFrame {
 
         btnthoat.setText("Thoát");
 
-        btnhome.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\house.png"));
-        btnsanpham.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\products.png"));
-        btnnhanvien.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\team.png"));
-        btnhoadon.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\bill.png"));
-        btnkho.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\inventory.png"));
-        btnkhachhang.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\customer.png"));
-        btnthoat.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\logout.png"));
-
-        
         btnhome.setText("Trang chủ");
         btnhome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,30 +138,45 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        lbtennhanvien.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lbtennhanvien.setForeground(new java.awt.Color(51, 0, 51));
+        lbtennhanvien.setText("Account ");
+
         javax.swing.GroupLayout pnMenuLayout = new javax.swing.GroupLayout(pnMenu);
         pnMenu.setLayout(pnMenuLayout);
         pnMenuLayout.setHorizontalGroup(
             pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnMenuLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnMenuLayout.createSequentialGroup()
-                        .addComponent(btnhome, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnMenuLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addContainerGap()
                         .addGroup(pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnkhachhang, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnnhanvien, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnhoadon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnkho, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnthoat, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnsanpham, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnMenuLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnkhachhang, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnnhanvien, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnhoadon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnkho, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnthoat, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnsanpham, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(pnMenuLayout.createSequentialGroup()
+                                .addComponent(btnhome, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(pnMenuLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(lbacount, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbtennhanvien, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         pnMenuLayout.setVerticalGroup(
             pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnMenuLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnMenuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbtennhanvien, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbacount))
                 .addGap(18, 18, 18)
                 .addComponent(btnhome, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -180,7 +191,7 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(btnkho, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnthoat, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addGap(63, 63, 63))
         );
 
         pnMain.setBackground(new java.awt.Color(255, 255, 255));
@@ -190,11 +201,11 @@ public class Main extends javax.swing.JFrame {
         pnMain.setLayout(pnMainLayout);
         pnMainLayout.setHorizontalGroup(
             pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 1137, Short.MAX_VALUE)
         );
         pnMainLayout.setVerticalGroup(
             pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 632, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout HomeLayout = new javax.swing.GroupLayout(Home);
@@ -289,8 +300,11 @@ public class Main extends javax.swing.JFrame {
 
     private void btnhomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhomeActionPerformed
     
-        String employeeName = Main.getEmployeeName();
+   
+   // Truyền tên nhân viên từ Main sang SaleProductPanel
+//        String employeeName = Main.getEmployeeName();
         SaleProductPanel view = new SaleProductPanel();
+        view.setEmployeeName(lbtennhanvien.getText());
         ProductDAO dao = new ProductDAO();
         new ProductController(view, dao);
         pnMain.add(view, "home");
@@ -356,7 +370,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main(role,employeeName).setVisible(true);
+                new Main(role).setVisible(true);
             }
         });
     }
@@ -373,6 +387,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lbacount;
+    private javax.swing.JLabel lbtennhanvien;
     private javax.swing.JPanel logo;
     private javax.swing.JPanel pnMain;
     private javax.swing.JPanel pnMenu;

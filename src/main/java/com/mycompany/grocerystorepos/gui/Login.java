@@ -4,7 +4,7 @@
  */
 package com.mycompany.grocerystorepos.gui;
 
-import com.mycompany.grocerystorepos.controller.Employee1Controller;
+
 import com.mycompany.grocerystorepos.controller.ProductController;
 import com.mycompany.grocerystorepos.dao.Employee1DAO;
 import com.mycompany.grocerystorepos.dao.ProductDAO;
@@ -126,70 +126,7 @@ public class Login extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-//     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-       
-//         Connection conn = null;
-//         PreparedStatement pstmt = null;
-//         ResultSet rs = null;
-//         String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;user=sa;password=123;encrypt=false;";
-
-//         try {
-//             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//             conn = DriverManager.getConnection(connectionUrl);
-
-//             String username = edtUsername.getText();
-//             String password = edtPassword.getText();
-
-//             // Kiểm tra đăng nhập trong bảng Employee1
-//             String SQL = "SELECT * FROM Employee1 WHERE Username=? AND Password=?";
-//             pstmt = conn.prepareStatement(SQL);
-//             pstmt.setString(1, username);
-//             pstmt.setString(2, password);
-//             rs = pstmt.executeQuery();
-
-//             if (rs.next()) {
-//                 String employeeName = rs.getString("Name");
-//                 // Lấy quyền của nhân viên
-//                 String role = rs.getString("Role");
-//                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công!"+ employeeName);
-
-//                   // Cập nhật tên nhân viên vào JLabel lbnhanvien
-// //                 lbnhanvien.setText("Nhân viên: " + employeeName);
-
-// //                dispose(); // Đóng cửa sổ đăng nhập
-
-//                 // Điều hướng giao diện dựa trên quyền của nhân viên
-//                 if (role.equals("Thu ngân")) {
-//                     SaleProductView SaleProductView = new SaleProductView();
-//                     SaleProductView.setEmployeeName(employeeName);
-//                     ProductDAO productDAO = new ProductDAO();
-//                     new ProductController(SaleProductView, productDAO);
-//                     SaleProductView.setVisible(true);
-//                 } else if (role.equals("Quản lý kho")) {
-// //                    InventoryView inventoryView = new InventoryView();
-// //                    // Controller cho quản lý kho (tạo nếu chưa có)
-// //                    new InventoryController(inventoryView);
-// //                    inventoryView.setVisible(true);
-//                 } else if (role.equals("Chủ cửa hàng")) {
-//                     Employee1View employeeView = new Employee1View();
-//                     Employee1DAO empDAO = new Employee1DAO();
-//                     new Employee1Controller(employeeView, empDAO);
-//                     employeeView.setVisible(true);
-//                 }
-//             } else {
-//                 JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác!");
-//                 edtUsername.setText("");
-//                 edtPassword.setText("");
-//             }
-
-//             conn.close();
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//             JOptionPane.showMessageDialog(this, "Lỗi khi đăng nhập: " + e.getMessage());
-//         }
-//     }//GEN-LAST:event_btnLoginActionPerformed
-
-private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -214,22 +151,19 @@ private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
 
         if (rs.next()) {
             String employeeName = rs.getString("Name");
+            int employeeId = rs.getInt("EmployeeID");
             String role = rs.getString("Role");
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công! Chào " + employeeName);
 
-            // Cập nhật tên nhân viên vào JLabel lbnhanvien (nếu cần)
-   
-
-            // Đóng cửa sổ đăng nhập
-            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
             
-            SaleProductPanel saleProductPanel = new SaleProductPanel();
-            saleProductPanel.setEmployeeName(employeeName);
+            
+            // Chuyển sang Main view và hiển thị tên nhân viên
+            Main mainView = new Main(role); // Tạo một Main view mới
+            mainView.setEmployeeName(employeeName);  // Gọi phương thức để hiển thị tên nhân viên
 
-            // Mở giao diện Main và phân quyền cho các button
-            Main mainView = new Main(role,employeeName);  // Truyền vai trò vào Main
+            // Hiển thị cửa sổ Main
             mainView.setVisible(true);
-
+            this.setVisible(false);  // Ẩn cửa sổ Login
         } else {
             JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác!");
             edtUsername.setText("");
@@ -239,8 +173,9 @@ private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
     } catch (Exception e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(this, "Lỗi khi đăng nhập: " + e.getMessage());
-    } 
+    }
 }
+
 
 
     private void btnForgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForgetActionPerformed

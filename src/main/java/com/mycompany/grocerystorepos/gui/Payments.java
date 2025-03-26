@@ -30,6 +30,9 @@ public class Payments extends javax.swing.JDialog {
         return txttenkh.getText();
     }
 
+    public String getEmployeeName() {
+            return lbnhanvien.getText();  // Trả về tên nhân viên từ JLabel
+        }
     public String getEmail() {
         return txtemail.getText();
     }
@@ -200,6 +203,8 @@ public class Payments extends javax.swing.JDialog {
             }
         });
 
+
+        
         btnhuy.setText("Hủy");
 
         lbtongtien.setText("jLabel1");
@@ -317,6 +322,9 @@ public class Payments extends javax.swing.JDialog {
 
     private void btninhoadonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btninhoadonActionPerformed
         // TODO add your handling code here:
+        // Khởi tạo controller và xử lý khi thanh toán thành công
+    InvoiceController invoiceController = new InvoiceController(this);  // Truyền đối tượng Payments (hiện tại)
+    invoiceController.onPaymentSuccess();  // Gọi phương thức xử lý thanh toán thành công
     }//GEN-LAST:event_btninhoadonActionPerformed
 
     

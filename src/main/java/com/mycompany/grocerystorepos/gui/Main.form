@@ -91,22 +91,32 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="btnhome" min="-2" pref="221" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="btnkhachhang" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
-                                  <Component id="btnnhanvien" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
-                                  <Component id="btnhoadon" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
-                                  <Component id="btnkho" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
-                                  <Component id="btnthoat" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
-                                  <Component id="btnsanpham" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="btnkhachhang" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                          <Component id="btnnhanvien" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                          <Component id="btnhoadon" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                          <Component id="btnkho" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                          <Component id="btnthoat" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                          <Component id="btnsanpham" alignment="1" min="-2" pref="221" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="btnhome" min="-2" pref="221" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="lbacount" min="-2" pref="54" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="lbtennhanvien" min="-2" pref="85" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -115,8 +125,13 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lbtennhanvien" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="lbacount" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnhome" min="-2" pref="55" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="btnsanpham" min="-2" pref="55" max="-2" attributes="0"/>
@@ -130,7 +145,7 @@
                       <Component id="btnkho" min="-2" pref="61" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="btnthoat" min="-2" pref="61" max="-2" attributes="0"/>
-                      <EmptySpace pref="121" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -169,9 +184,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnhome">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/image/house.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Trang ch&#x1ee7;"/>
               </Properties>
               <Events>
@@ -185,6 +197,19 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnsanphamActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbtennhanvien">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="18" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="0" red="33" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Account "/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbacount">
             </Component>
           </SubComponents>
         </Container>
@@ -201,12 +226,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="1137" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="632" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>

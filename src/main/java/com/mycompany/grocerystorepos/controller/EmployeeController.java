@@ -2,7 +2,6 @@ package com.mycompany.grocerystorepos.controller;
 
 import com.mycompany.grocerystorepos.dao.Employee1DAO;
 import com.mycompany.grocerystorepos.model.Employee1;
-import com.mycompany.grocerystorepos.gui.Employee1View;
 import com.mycompany.grocerystorepos.gui.EmployeePanel;
 import javax.swing.*;
 import java.util.List;

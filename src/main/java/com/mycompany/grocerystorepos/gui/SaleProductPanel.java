@@ -35,6 +35,7 @@ public class SaleProductPanel extends javax.swing.JPanel {
     private double discountRate = 0;
 
      private String employeeName;  // Biến lưu tên nhân viên
+     private int employeeId;
     public SaleProductPanel() {
         initComponents();
         productDAO = new ProductDAO();
@@ -71,6 +72,8 @@ public class SaleProductPanel extends javax.swing.JPanel {
     public void setEmployeeName(String employeeName) {
         lbnhanvien.setText("" + employeeName);
     }
+
+  
 
     private void searchCustomer() {
         String phone = txtkhachhang.getText().trim();  // Lấy số điện thoại từ ô tìm kiếm
