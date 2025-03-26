@@ -3,6 +3,7 @@ package com.mycompany.grocerystorepos.controller;
 import com.mycompany.grocerystorepos.dao.ProductDAO;
 import com.mycompany.grocerystorepos.model.Product;
 import com.mycompany.grocerystorepos.gui.ProductViewPanel;
+import com.mycompany.grocerystorepos.gui.SaleProductPanel;
 import com.mycompany.grocerystorepos.gui.SaleProductView;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -15,8 +16,8 @@ public class ProductController  extends JPanel {
 
     private ProductViewPanel pview;  // Sửa từ view -> pview
     private ProductDAO model;
-    private SaleProductView sview;
-
+//    private SaleProductView sview;
+    private SaleProductPanel sview;
 //     // Constructor nhận vào ProductViewPanel và ProductDAO
 //     public ProductController(ProductViewPanel pview, ProductDAO model) {
 //         this.pview = pview;  // Sửa từ view -> pview
@@ -55,7 +56,7 @@ public ProductController(ProductViewPanel pview, ProductDAO model) {
         loadProducts();
     }
     
-    public ProductController(SaleProductView sview, ProductDAO model) {
+    public ProductController(SaleProductPanel sview, ProductDAO model) {
         this.sview = sview;
         this.model = model;
     }
@@ -227,6 +228,7 @@ public ProductController(ProductViewPanel pview, ProductDAO model) {
         pview.setQuantity("");  // Sửa từ view -> pview
         pview.setUnit("");  // Sửa từ view -> pview
         pview.setSupplier("");  // Sửa từ view -> pview
+        pview.setCategory(TOOL_TIP_TEXT_KEY);
     }
 
     private void setUpTableSelectionListener() {

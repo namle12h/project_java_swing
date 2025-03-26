@@ -1,119 +1,125 @@
 package com.mycompany.grocerystorepos.controller;
 
-import com.mycompany.grocerystorepos.dao.EmployeeDAO;
-import com.mycompany.grocerystorepos.model.Employee;
-import com.mycompany.grocerystorepos.gui.EmployeeView;
-import java.sql.SQLException;
+import com.mycompany.grocerystorepos.dao.Employee1DAO;
+import com.mycompany.grocerystorepos.model.Employee1;
+import com.mycompany.grocerystorepos.gui.Employee1View;
+import com.mycompany.grocerystorepos.gui.EmployeePanel;
 import javax.swing.*;
 import java.util.List;
 
 public class EmployeeController {
-    private EmployeeView view;
-    private EmployeeDAO model;
+    private EmployeePanel view;
+    private Employee1DAO model;
 
-    public EmployeeController(EmployeeView view, EmployeeDAO model) {
+    public EmployeeController(EmployeePanel view, Employee1DAO model) {
         this.view = view;
         this.model = model;
 
-        view.getBtnAdd().addActionListener(e -> {
-            try {
-                addEmployee();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(view, "Lỗi khi thêm nhân viên: " + ex.getMessage());
-            }
-        });
+        // Các action listener cho các nút
+        view.getBtnAdd().addActionListener(e -> addEmployee());
+        view.getBtnUpdate().addActionListener(e -> updateEmployee());
+        view.getBtnDelete().addActionListener(e -> deleteEmployee());
 
-        view.getBtnUpdate().addActionListener(e -> {
-            try {
-                updateEmployee();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(view, "Lỗi khi cập nhật nhân viên: " + ex.getMessage());
-            }
-        });
-
-        view.getBtnDelete().addActionListener(e -> {
-            try {
-                deleteEmployee();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(view, "Lỗi khi xóa nhân viên: " + ex.getMessage());
-            }
-        });
-
+        // Thiết lập hành động khi chọn một dòng trong bảng
         setUpTableSelectionListener();
+        
+        // Tải dữ liệu nhân viên
         loadEmployees();
-
-        List<String> roles = model.getAllRoles(); // Kiểm tra nếu lỗi ở đây
-        if (roles != null) {
-            view.updateRoleComboBox(roles);
-        }
     }
 
+    // Phương thức tải tất cả nhân viên từ model và hiển thị trên bảng
     private void loadEmployees() {
-        view.getTableModel().setRowCount(0);
-        List<Employee> employees = model.getAllEmployees();
-        for (Employee e : employees) {
-            view.getTableModel().addRow(new Object[]{
-                e.getEmployeeId(), e.getName(), e.getPhone(), e.getRole()
+        view.getTableModel().setRowCount(0);  // Xóa dữ liệu hiện tại trong bảng
+        List<Employee1> employees = model.getAllEmployees();  // Lấy danh sách nhân viên từ DAO
+        for (Employee1 e : employees) {
+            view.getTableModel().addRow(new Object[] {
+                e.getEmployeeID(), e.getName(), e.getPhone(), e.getRole(), e.getUsername(), e.getPassword(), e.getShiftStart(), e.getShiftEnd(), e.getSalesPerformance()
             });
         }
     }
 
-    private void addEmployee() throws SQLException {
+    // Phương thức thêm nhân viên
+    private void addEmployee() {
+      
         String name = view.getEmployeeName();
         String phone = view.getPhone();
+        String username = view.getUsername();
+        String password = view.getPassword();
         String role = view.getRole();
+        String shiftStart = view.getShiftStart();
+        String shiftEnd = view.getShiftEnd();
+        int salesPerformance = 0;  // Mặc định salesPerformance là 0
 
-        if (name.isEmpty() || phone.isEmpty() || role.isEmpty()) {
+        // Kiểm tra thông tin đầu vào
+        if (name.isEmpty() || phone.isEmpty() || role.isEmpty() || username.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Vui lòng điền đầy đủ thông tin!");
             return;
         }
 
-        Employee newEmployee = new Employee(0, name, phone, role);
+        // Tạo đối tượng Employee1 mới và thêm vào cơ sở dữ liệu
+        Employee1 newEmployee = new Employee1(0, name, phone, role, username, password, shiftStart, shiftEnd, salesPerformance);
         model.addEmployee(newEmployee);
         JOptionPane.showMessageDialog(view, "Thêm nhân viên thành công!");
-        loadEmployees();
+        loadEmployees();  // Cập nhật lại bảng sau khi thêm nhân viên mới
     }
 
-    private void updateEmployee() throws SQLException {
+    // Phương thức cập nhật thông tin nhân viên
+    private void updateEmployee() {
         int selectedRow = view.getTable().getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(view, "Chọn nhân viên cần cập nhật!");
             return;
         }
 
-        int employeeID = Integer.parseInt(view.getEmployeeID());
+        // Lấy thông tin nhân viên từ bảng và các trường nhập liệu
+        int employeeID = Integer.parseInt(view.getEmployeeID()); // Lấy mã nhân viên
         String name = view.getEmployeeName();
         String phone = view.getPhone();
+        String username = view.getUsername();
+        String password = view.getPassword();
         String role = view.getRole();
+        String shiftStart = view.getShiftStart();
+        String shiftEnd = view.getShiftEnd();
+        int salesPerformance = (int) view.getTableModel().getValueAt(selectedRow, 8);  // Lấy hiệu suất bán hàng từ bảng
 
-        Employee updatedEmployee = new Employee(employeeID, name, phone, role);
-//        model.updateEmployee(updatedEmployee);
+        // Tạo đối tượng Employee1 với thông tin đã thay đổi
+        Employee1 updatedEmployee = new Employee1(employeeID, name, phone, role, username, password, shiftStart, shiftEnd, salesPerformance);
+        model.updateEmployee(updatedEmployee);  // Cập nhật nhân viên vào cơ sở dữ liệu
         JOptionPane.showMessageDialog(view, "Cập nhật nhân viên thành công!");
-        loadEmployees();
+        loadEmployees();  // Cập nhật lại bảng sau khi cập nhật nhân viên
     }
 
-    private void deleteEmployee() throws SQLException {
+    // Phương thức xóa nhân viên
+    private void deleteEmployee() {
         int selectedRow = view.getTable().getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(view, "Chọn nhân viên cần xóa!");
             return;
         }
 
-        int employeeID = Integer.parseInt(view.getEmployeeID());
-        model.deleteEmployee(employeeID);
+        // Lấy ID của nhân viên cần xóa từ bảng
+        int employeeID = (int) view.getTableModel().getValueAt(selectedRow, 0);
+        model.deleteEmployee(employeeID);  // Xóa nhân viên trong cơ sở dữ liệu
         JOptionPane.showMessageDialog(view, "Xóa nhân viên thành công!");
-        loadEmployees();
+        loadEmployees();  // Cập nhật lại bảng sau khi xóa nhân viên
     }
 
+    // Phương thức để thiết lập hành động khi chọn một dòng trong bảng
     private void setUpTableSelectionListener() {
         view.getTable().getSelectionModel().addListSelectionListener(e -> {
             int selectedRow = view.getTable().getSelectedRow();
             if (selectedRow != -1) {
+                // Cập nhật thông tin vào các trường nhập liệu khi chọn nhân viên
                 view.setEmployeeID(String.valueOf(view.getTableModel().getValueAt(selectedRow, 0)));
                 view.setEmployeeName((String) view.getTableModel().getValueAt(selectedRow, 1));
                 view.setPhone((String) view.getTableModel().getValueAt(selectedRow, 2));
                 view.setRole((String) view.getTableModel().getValueAt(selectedRow, 3));
+                view.setUsername((String) view.getTableModel().getValueAt(selectedRow, 4));
+                view.setPassword((String) view.getTableModel().getValueAt(selectedRow, 5));
+                view.setShiftStart((String) view.getTableModel().getValueAt(selectedRow, 6));
+                view.setShiftEnd((String) view.getTableModel().getValueAt(selectedRow, 7));
             }
         });
     }
+    
 }

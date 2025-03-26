@@ -4,10 +4,11 @@
  */
 package com.mycompany.grocerystorepos.gui;
 
+import com.mycompany.grocerystorepos.controller.EmployeeController;
 import com.mycompany.grocerystorepos.controller.ProductController;
+import com.mycompany.grocerystorepos.dao.Employee1DAO;
 import com.mycompany.grocerystorepos.dao.ProductDAO;
 import java.awt.CardLayout;
-
 
 /**
  *
@@ -15,35 +16,49 @@ import java.awt.CardLayout;
  */
 public class Main extends javax.swing.JFrame {
 
-   public CardLayout card = new CardLayout();
-    
-    public Main() {
+    public CardLayout card = new CardLayout();
+    private static String role;
+    private SaleProductPanel saleProductPanel;
+    private static String employeeName;  // Biến lưu tên nhân viên
+
+    public Main(String role, String employeeName) {
         initComponents();
-         pnMain.setLayout(card);
-          // Xác định vai trò người dùng (admin hoặc nhân viên)
-        String role = getRoleFromUser(); // Giả sử có phương thức này để lấy vai trò
-        
+        this.role = role;
+        pnMain.setLayout(card);
+
         // Cập nhật quyền truy cập cho các button
         updateButtonsBasedOnRole(role);
+        // Khởi tạo SaleProductPanel và truyền tên nhân viên vào
+        saleProductPanel = new SaleProductPanel(employeeName);
+        pnMain.add(saleProductPanel, "SaleProductPanel");
     }
 
     // Phương thức phân quyền: ẩn hoặc kích hoạt các button tùy thuộc vào vai trò người dùng
-    private void updateButtonsBasedOnRole(String role) {
-        if ("admin".equals(role)) {
-            // Admin có quyền sử dụng tất cả các button
-            btnsanpham.setEnabled(true);
-            btnkhachhang.setEnabled(true);
-            btnhoadon.setEnabled(true);
-            btnkho.setEnabled(true);
-            btnnhanvien.setEnabled(true);
-            btnthoat.setEnabled(true);
-        } else if ("employee".equals(role)) {
-            // Nhân viên chỉ có quyền sử dụng một số button
+    // Phương thức phân quyền: ẩn hoặc kích hoạt các button tùy thuộc vào vai trò người dùng
+    public void updateButtonsBasedOnRole(String role) {
+        if ("Thu ngân".equals(role)) {
+            // Thu ngân chỉ có quyền sử dụng một số button như Sản phẩm, Khách hàng, Hóa đơn
             btnsanpham.setEnabled(true);
             btnkhachhang.setEnabled(true);
             btnhoadon.setEnabled(true);
             btnkho.setEnabled(false);  // Vô hiệu hóa button Kho
             btnnhanvien.setEnabled(false);  // Vô hiệu hóa button Nhân viên
+            btnthoat.setEnabled(true);
+        } else if ("Quản lý kho".equals(role)) {
+            // Quản lý kho chỉ có quyền sử dụng Kho và Sản phẩm
+            btnsanpham.setEnabled(true);
+            btnkhachhang.setEnabled(false);  // Vô hiệu hóa button Khách hàng
+            btnhoadon.setEnabled(false);  // Vô hiệu hóa button Hóa đơn
+            btnkho.setEnabled(true);
+            btnnhanvien.setEnabled(false);  // Vô hiệu hóa button Nhân viên
+            btnthoat.setEnabled(true);
+        } else if ("Chủ cửa hàng".equals(role)) {
+            // Chủ cửa hàng có quyền sử dụng tất cả các button
+            btnsanpham.setEnabled(true);
+            btnkhachhang.setEnabled(true);
+            btnhoadon.setEnabled(true);
+            btnkho.setEnabled(true);
+            btnnhanvien.setEnabled(true);
             btnthoat.setEnabled(true);
         }
     }
@@ -54,7 +69,11 @@ public class Main extends javax.swing.JFrame {
         // Ví dụ:
         return "employee";  // Hoặc "admin" tùy theo vai trò người dùng
     }
-  
+
+    public static String getEmployeeName() {
+        return employeeName;  // Trả về tên nhân viên đã lưu
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -100,6 +119,15 @@ public class Main extends javax.swing.JFrame {
 
         btnthoat.setText("Thoát");
 
+        btnhome.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\house.png"));
+        btnsanpham.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\products.png"));
+        btnnhanvien.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\team.png"));
+        btnhoadon.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\bill.png"));
+        btnkho.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\inventory.png"));
+        btnkhachhang.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\customer.png"));
+        btnthoat.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\logout.png"));
+
+        
         btnhome.setText("Trang chủ");
         btnhome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,7 +205,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(pnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnMain, javax.swing.GroupLayout.DEFAULT_SIZE, 896, Short.MAX_VALUE)
+                .addComponent(pnMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1137, Short.MAX_VALUE)
                 .addContainerGap())
         );
         HomeLayout.setVerticalGroup(
@@ -216,27 +244,25 @@ public class Main extends javax.swing.JFrame {
         logoLayout.setHorizontalGroup(
             logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logoLayout.createSequentialGroup()
-                .addContainerGap(205, Short.MAX_VALUE)
+                .addContainerGap(217, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 764, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 764, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(241, 241, 241))
         );
         logoLayout.setVerticalGroup(
             logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(logoLayout.createSequentialGroup()
                 .addContainerGap(29, Short.MAX_VALUE)
-                .addGroup(logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logoLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logoLayout.createSequentialGroup()
+                .addGroup(logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(logoLayout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
+                        .addGap(32, 32, 32)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -262,55 +288,47 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnhomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhomeActionPerformed
-        pnMain.add(new Login(),"account");
-        card.show(pnMain, "account");
+    
+        String employeeName = Main.getEmployeeName();
+        SaleProductPanel view = new SaleProductPanel();
+        ProductDAO dao = new ProductDAO();
+        new ProductController(view, dao);
+        pnMain.add(view, "home");
+        CardLayout card = (CardLayout) pnMain.getLayout();
+        card.show(pnMain, "home");
+
     }//GEN-LAST:event_btnhomeActionPerformed
 
     private void btnkhachhangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnkhachhangActionPerformed
-       pnMain.add(new ProductViewPanel(),"customer");
+        pnMain.add(new ProductViewPanel(), "customer");
         card.show(pnMain, "customer");
     }//GEN-LAST:event_btnkhachhangActionPerformed
 
-//     private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {
-    
-//     pnMain.add(new ProductViewPanel(), "product");
-//     card.show(pnMain, "product");
-// }
+    private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {
+        // Tạo ProductViewPanel và ProductDAO
+        ProductViewPanel pview = new ProductViewPanel();
+        ProductDAO dao = new ProductDAO();
 
-// private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {                                               
-      
-//     // Thêm controller vào pnMain
-//     pnMain.add(new ProductViewPanel(), "product");
-//     card.show(pnMain, "product");
-// }
+        // Tạo ProductController và truyền vào view, dao
+        new ProductController(pview, dao);
 
-private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {                                               
-    // Tạo ProductViewPanel và ProductDAO
-    ProductViewPanel pview = new ProductViewPanel();
-    ProductDAO dao = new ProductDAO();
+        // Thêm ProductViewPanel vào pnMain
+        pnMain.add(pview, "product");
 
-    // Tạo ProductController và truyền vào view, dao
-    new ProductController(pview, dao);
-
-    // Thêm ProductViewPanel vào pnMain
-    pnMain.add(pview, "product");
-    
-    // Hiển thị panel "product"
-    CardLayout card = (CardLayout) pnMain.getLayout();
-    card.show(pnMain, "product");
-}
-
+        // Hiển thị panel "product"
+        CardLayout card = (CardLayout) pnMain.getLayout();
+        card.show(pnMain, "product");
+    }
 
 
     private void btnnhanvienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnhanvienActionPerformed
-        pnMain.add(new Employee1View(),"employee");
-            card.show(pnMain, "employee");
+        EmployeePanel view = new EmployeePanel();
+        Employee1DAO dao = new Employee1DAO();
+        new EmployeeController(view, dao);
+        pnMain.add(view, "customer");
+        card.show(pnMain, "customer");
     }//GEN-LAST:event_btnnhanvienActionPerformed
 
-    
-    
-    
-    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -338,7 +356,7 @@ private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new Main(role,employeeName).setVisible(true);
             }
         });
     }
@@ -360,6 +378,4 @@ private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JPanel pnMenu;
     // End of variables declaration//GEN-END:variables
 
- 
-    
 }

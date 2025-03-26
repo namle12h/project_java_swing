@@ -87,4 +87,13 @@ public class Employee1View extends JFrame {
     // 🔹 Getter bảng
     public JTable getTable() { return table; }
     public DefaultTableModel getTableModel() { return tableModel; }
+    
+    
+    public static void main(String[] args) {
+       java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Employee1View().setVisible(true);
+            }
+        });
+    }
 }
