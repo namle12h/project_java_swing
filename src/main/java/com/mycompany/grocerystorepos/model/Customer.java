@@ -8,18 +8,23 @@ package com.mycompany.grocerystorepos.model;
  *
  * @author LENOVO
  */
-
-
-
 public class Customer {
 
-    private String id;
+    private Integer  id;
     private String name;
     private String phone;
     private String email;
     private String point;
 
-    public Customer(String id, String name, String phone, String email, String point) {
+    public Customer(String name, String phone, String email, String point) {
+        this.id = null;  // ID sẽ được sinh tự động trong database
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.point = point;
+    }
+
+    public Customer(int id, String name, String phone, String email, String point) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -27,15 +32,13 @@ public class Customer {
         this.point = point;
     }
 
-    // Getters and setters
-    public String getId() {
+public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
-
     public String getName() {
         return name;
     }
@@ -68,7 +71,6 @@ public class Customer {
         this.point = point;
     }
 
-    
     @Override
     public String toString() {
         return id + " - " + name;

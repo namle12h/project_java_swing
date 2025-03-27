@@ -62,7 +62,7 @@ public class CustomerDAO {
 
             // Thực hiện thêm nếu ID chưa tồn tại
             try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
-                pstmt.setString(1, customer.getId());
+                pstmt.setInt(1, customer.getId());
                 pstmt.setString(2, customer.getName());
                 pstmt.setString(3, customer.getPhone());
                 pstmt.setString(4, customer.getEmail());
@@ -87,7 +87,7 @@ public class CustomerDAO {
             pstmt.setString(2, customer.getPhone());
             pstmt.setString(3, customer.getEmail()); // ✅ Thêm email vào đúng vị trí
             pstmt.setString(4, customer.getPoint()); // ✅ Cập nhật điểm thưởng
-            pstmt.setString(5, customer.getId());  // ✅ ID phải ở vị trí cuối
+            pstmt.setInt(5, customer.getId());  // ✅ ID phải ở vị trí cuối
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;

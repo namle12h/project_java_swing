@@ -212,10 +212,7 @@ public class ProductViewPanel extends javax.swing.JPanel {
 
         tbproduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                
             },
             new String [] {
                 "Mã SP", "Tên SP", "Giá", "Số Lượng", "Đơn Vị", "Mã NCC", "Loại", "Minstock"
@@ -227,6 +224,8 @@ public class ProductViewPanel extends javax.swing.JPanel {
         btnadd.setText("ADD");
 
         btnupdate.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\update.png"));
+        btndelete.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\trash.png"));
+        btnsave.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\refresh.png"));
         btnupdate.setText("Update");
 
         btndelete.setText("Delete");

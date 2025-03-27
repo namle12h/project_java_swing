@@ -87,6 +87,7 @@ com\mycompany\grocerystorepos\gui\Login$2.class
 com\mycompany\grocerystorepos\gui\SalesPage$2.class
 com\mycompany\grocerystorepos\gui\Main$5.class
 com\mycompany\grocerystorepos\model\Employee.class
+com\mycompany\grocerystorepos\gui\InvoiceViewPanel.class
 com\mycompany\grocerystorepos\model\Product.class
 com\mycompany\grocerystorepos\gui\forgetPasswordAdmin.class
 com\mycompany\grocerystorepos\gui\SaleProductPanel$5.class

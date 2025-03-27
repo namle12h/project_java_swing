@@ -172,6 +172,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="H&#xf3;a &#x110;&#x1a1;n"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnhoadonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnkho">
               <Properties>

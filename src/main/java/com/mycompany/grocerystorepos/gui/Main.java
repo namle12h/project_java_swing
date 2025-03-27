@@ -119,22 +119,17 @@ public class Main extends javax.swing.JFrame {
         });
 
         btnhoadon.setText("Hóa Đơn");
+        btnhoadon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnhoadonActionPerformed(evt);
+            }
+        });
 
         btnkho.setText("Kho ");
 
         btnthoat.setText("Thoát");
 
         btnhome.setText("Trang chủ");
-
-
-        btnhome.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\home.png"));
-        btnsanpham.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\products.png"));
-        btnhoadon.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\bill.png"));
-        btnnhanvien.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\team.png"));
-        btnkhachhang.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\customer.png"));
-        btnthoat.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\logout.png"));
-        lbacount.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+ "\\src\\main\\java\\image\\profile.png"));
-
         btnhome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnhomeActionPerformed(evt);
@@ -185,7 +180,7 @@ public class Main extends javax.swing.JFrame {
             pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnMenuLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbtennhanvien, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbacount))
                 .addGap(18, 18, 18)
@@ -353,6 +348,12 @@ public class Main extends javax.swing.JFrame {
         pnMain.add(view, "customer");
         card.show(pnMain, "customer");
     }//GEN-LAST:event_btnnhanvienActionPerformed
+
+    private void btnhoadonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhoadonActionPerformed
+       pnMain.add(new InvoicePanel(), "bill");
+        card.show(pnMain, "bill");
+        
+    }//GEN-LAST:event_btnhoadonActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
